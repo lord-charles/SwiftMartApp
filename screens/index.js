@@ -1,30 +1,3 @@
-// import MainLayout from './MainLayout';
-
-// Home
-// import Home from './Home/Home';
-
-// Food
-// import FoodDetail from './Food/FoodDetail';
-
-//.filter modal
-
-// import FilterModal from './Home/FilterModal';
-// Search
-// import Search from './Search/Search';
-
-// Cart
-// import CartTab from './Cart/CartTab';
-// import Checkout from './Cart/Checkout';
-// import MyCart from './Cart/MyCart';
-// import Success from './Cart/Success';
-
-// Favourite
-// import Favourite from './Favourite/Favourite';
-
-// Notification
-// import Notification from './Notification/Notification';
-
-//part2
 import OnBoarding from './OnBoarding/OnBoarding';
 
 // Authentication
@@ -33,6 +6,7 @@ import SignUp from './Authentication/SignUp';
 import Otp from './Authentication/Otp';
 import ForgotPassword from './Authentication/ForgotPassword';
 import NewPassword from './Authentication/NewPassword';
+
 import Home from './Home';
 import ProductDetails from './productDetails/ProductDetails';
 import Account from './Account/Account';
@@ -49,8 +23,14 @@ import Derivered from './Orders/Derivered';
 import Cancelled from './Orders/Cancelled';
 import ToBeShipped from './Orders/ToBeShipped';
 import Shipped from './Orders/Shipped';
+import TrackOrder from './Orders/TrackOrder';
+import WishList from './wishlist/WishList';
+import Category from './Category/Category';
 
 export {
+  Category,
+  TrackOrder,
+  WishList,
   Derivered,
   Cancelled,
   ToBeShipped,

@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, View, Image, Animated} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {icons} from '../constants';
-import {Home, SignIn, Message, Cart, Account} from '../screens';
+import {Home, MyOrders, Category, Cart, Account} from '../screens';
 import {useDrawerStatus} from '@react-navigation/drawer';
 import LottieView from 'lottie-react-native';
 
@@ -17,11 +17,11 @@ const TabArr = [
     Component: Home,
   },
   {
-    route: 'Message',
-    label: 'Message',
-    activeIcon: icons.message,
+    route: 'Category',
+    label: 'Category',
+    activeIcon: icons.categories,
     inActiveIcon: require('../assets/icons/setting.png'),
-    Component: Message,
+    Component: Category,
   },
   {
     route: 'Cart',
@@ -32,11 +32,11 @@ const TabArr = [
   },
 
   {
-    route: 'User',
-    label: 'User',
-    activeIcon: icons.categories,
+    route: 'Orders',
+    label: 'Orders',
+    activeIcon: icons.orders_outline,
     inActiveIcon: require('../assets/icons/setting.png'),
-    Component: SignIn,
+    Component: MyOrders,
   },
   {
     route: 'Account',

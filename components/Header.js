@@ -6,7 +6,7 @@ import axios from 'axios';
 import {base_url} from '../utils/baseUrl';
 import {useFocusEffect} from '@react-navigation/native';
 
-const Header = ({navigation}) => {
+const Header = ({navigation, wishlistData}) => {
   const [data, setData] = useState([]);
 
   const token =
@@ -26,13 +26,10 @@ const Header = ({navigation}) => {
     }
   };
 
-  // useEffect(() => {
-  //   getCart();
-  // }, []);
-
   useFocusEffect(
     useCallback(() => {
       getCart();
+
       return () => {
         // Clean up any subscriptions or resources if needed
       };
@@ -67,12 +64,19 @@ const Header = ({navigation}) => {
               style={{tintColor: 'black'}}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('WishList')}>
             <Image
               source={icons.heart}
               className="w-[20px] h-[20px]"
               style={{tintColor: 'black'}}
             />
+            {wishlistData !== null && wishlistData > 0 ? (
+              <View className="absolute right-[-10px] top-[-11px] bg-red-500 rounded-full  h-[17px] w-[17px] items-center flex justify-center">
+                <Text className="text-[11px] text-center text-white">
+                  {wishlistData}
+                </Text>
+              </View>
+            ) : null}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -85,7 +89,7 @@ const Header = ({navigation}) => {
             />
 
             {data?.length > 0 ? (
-              <View className="absolute right-[-8px] top-[-8px] bg-red-500 rounded-full  h-[17px] w-[17px] items-center flex justify-center">
+              <View className="absolute right-[-10px] top-[-11px] bg-red-500 rounded-full  h-[17px] w-[17px] items-center flex justify-center">
                 <Text className="text-[11px] text-center text-white">
                   {data.length}
                 </Text>

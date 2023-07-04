@@ -10,7 +10,7 @@ import OrderCard from './OrderCard';
 const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
 
-const Unpaid = () => {
+const Unpaid = ({navigation}) => {
   const [disable, setDisable] = useState(false);
   const [data, setData] = useState([]);
   const [noData, setnoData] = useState(false);
@@ -128,7 +128,7 @@ const Unpaid = () => {
           renderItem={({item}, props) => {
             return (
               <>
-                <OrderCard item={item} />
+                <OrderCard item={item} navigation={navigation} />
               </>
             );
           }}

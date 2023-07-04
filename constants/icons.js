@@ -99,8 +99,28 @@ const requestfriend = require('../assets/icons/requestfriend.png');
 const cash_on_delivery = require('../assets/icons/cash-on-delivery.png');
 const paid = require('../assets/icons/paid.png');
 const Unpaid = require('../assets/icons/upaid.png');
+const orderPlaced = require('../assets/icons/orderPlaced.png');
+const orderProcessed = require('../assets/icons/orderProcessed.png');
+const shipped2 = require('../assets/icons/shipped2.png');
+const star2 = require('../assets/icons/star2.png');
+const message2 = require('../assets/icons/message2.png');
+const whatsapp = require('../assets/icons/whatsapp.png');
+const gmail = require('../assets/icons/gmail.png');
+const twitter = require('../assets/icons/twitter.png');
+const telegram = require('../assets/icons/telegram.png');
+const orders_outline = require('../assets/icons/orders_outline.png');
 
 export default {
+  orders_outline,
+  message2,
+  whatsapp,
+  gmail,
+  twitter,
+  telegram,
+  star2,
+  orderProcessed,
+  shipped2,
+  orderPlaced,
   paid,
   Unpaid,
   cash_on_delivery,

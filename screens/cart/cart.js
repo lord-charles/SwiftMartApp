@@ -110,7 +110,6 @@ const Cart = ({navigation}) => {
   };
 
   const removeCartItem = async productId => {
-    console.log(`Removing ${productId}`);
     try {
       const api = axios.create({
         baseURL: base_url,
@@ -121,11 +120,11 @@ const Cart = ({navigation}) => {
       const res = await api.put('/cart/remove-one', {
         productId,
       });
-      // console.log(res);
+
       setListData(res.data.cart.items);
       setTotal(res.data.cart.totalPrice);
 
-      toast.show(`Product removed`, {
+      toast.show('Product removed', {
         type: 'success',
         placement: 'top',
         duration: 2000,
@@ -135,7 +134,7 @@ const Cart = ({navigation}) => {
       setLoading(false);
 
       if (res.data.err === 'Not Authorized token expired, Please Login again') {
-        toast.show(`Please login to continue`, {
+        toast.show('Please login to continue', {
           type: 'danger',
           placement: 'top',
           duration: 3000,
@@ -181,6 +180,94 @@ const Cart = ({navigation}) => {
       }
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const moveToWishlist = async (prodId, title) => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+
+      const res = await api.put(
+        'products/wishlist/',
+        {
+          prodId,
+        },
+        config(token),
+      );
+      if (res.data.added) {
+        return (
+          toast.show(`${title} moved to wishlist`, {
+            type: 'success',
+            placement: 'top',
+            duration: 2000,
+            offset: 30,
+            animationType: 'slide-in',
+          }),
+          removeCartItem(prodId),
+          getCart()
+        );
+      } else {
+        re_moveToWishlist(prodId, title);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.show('retry', {
+        type: 'danger',
+        placement: 'top',
+        duration: 2000,
+        offset: 30,
+        animationType: 'slide-in',
+      });
+    }
+  };
+
+  const re_moveToWishlist = async (prodId, title) => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+
+      const res = await api.put(
+        'products/wishlist/',
+        {
+          prodId,
+        },
+        config(token),
+      );
+      if (res.data.added) {
+        return (
+          toast.show(`${title} moved to wishlist`, {
+            type: 'success',
+            placement: 'top',
+            duration: 2000,
+            offset: 30,
+            animationType: 'slide-in',
+          }),
+          removeCartItem(prodId),
+          getCart()
+        );
+      } else {
+        toast.show(`${title} removed from wishlist`, {
+          type: 'danger',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.show('retry', {
+        type: 'danger',
+        placement: 'top',
+        duration: 2000,
+        offset: 30,
+        animationType: 'slide-in',
+      });
     }
   };
 
@@ -230,7 +317,7 @@ const Cart = ({navigation}) => {
           </Text>
           <View>
             <Text className="text-black text-[13px]">
-              {data.item.product?.price.toLocaleString()}
+              KSh {data.item.product?.price.toLocaleString()}
             </Text>
             {/* quantity table */}
             <View className="absolute bottom-[-40px] left-[145px] w-[300px] h-[60px]">
@@ -291,7 +378,9 @@ const Cart = ({navigation}) => {
   const renderHiddenItem = data => (
     <View className="flex flex-row justify-between px-2 relative top-[55px]">
       <TouchableOpacity
-        onPress={() => alert('coming soon')}
+        onPress={() =>
+          moveToWishlist(data.item.product._id, data.item.product.title)
+        }
         className=" h-[100px] relative top-[-50px]">
         <LottieView
           source={require('../../assets/Wishlist.json')}
@@ -501,9 +590,7 @@ const Cart = ({navigation}) => {
           <Text
             className="text-black relative top-[-1vh] text-[12px] mx-3 text-center"
             style={styles.customFont}>
-            No records were found associated with your cart in our servers.
-            Please proceed to add products to start populating your cart and
-            view your selected items.
+            No content here.
           </Text>
         </View>
       )}

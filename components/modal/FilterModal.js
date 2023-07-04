@@ -4,10 +4,8 @@ import {
   View,
   Text,
   Animated,
-  ScrollView,
   TouchableWithoutFeedback,
   Modal,
-  Image,
   TouchableOpacity,
 } from 'react-native';
 import {icons} from '../../constants';
@@ -22,13 +20,19 @@ import LottieView from 'lottie-react-native';
 const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
 
-const FilterModal = ({isVisible, onClose, product, getCart}) => {
-  const {width, height} = Dimensions.get('window');
+const FilterModal = ({
+  isVisible,
+  onClose,
+  product,
+  getCart,
+  isOrder,
+  navigation,
+}) => {
+  const {height} = Dimensions.get('window');
   const [selectedColor, setSelectedColor] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(isVisible);
   const [value, setValue] = useState(1);
   const [loading, setLoading] = useState(false);
-
   const toast = useToast();
 
   const cartData = {
@@ -86,6 +90,48 @@ const FilterModal = ({isVisible, onClose, product, getCart}) => {
     }
   };
 
+  const orderNow = async () => {
+    setLoading(true);
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+
+      const res = await api.post(
+        'user/cart/addtocart/',
+        {
+          cart: [{id: product._id, count: value, color: selectedColor}],
+        },
+        config(token),
+      );
+      if (res.status === 200) {
+        return (
+          toast.show('Sucess', {
+            type: 'success',
+            placement: 'top',
+            duration: 2000,
+            offset: 30,
+            animationType: 'slide-in',
+          }),
+          onClose(),
+          setLoading(false),
+          navigation.navigate('Checkout')
+        );
+      } else {
+        toast.show('Something went wrong, retry', {
+          type: 'danger',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        });
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
   const handleCartData = async () => {
     if (selectedColor === null) {
       return toast.show('Please select the correct color', {
@@ -96,11 +142,9 @@ const FilterModal = ({isVisible, onClose, product, getCart}) => {
         animationType: 'zoom-in',
       });
     }
-    addToCart();
-    console.log('next2');
+    isOrder ? orderNow() : addToCart();
   };
 
-  // console.log(cartData);
   const handleMinusClick = () => {
     if (value > 1) {
       setValue(value - 1);

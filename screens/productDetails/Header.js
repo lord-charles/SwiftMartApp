@@ -4,7 +4,7 @@ import {icons} from '../../constants';
 
 import FastImage from 'react-native-fast-image';
 
-const Header = ({navigation, data}) => {
+const Header = ({navigation, data, wishlistData}) => {
   return (
     <View className="h-[55px] bg-gray-100 flex flex-row items-center justify-between px-2">
       <View className="flex flex-row space-x-3 items-center">
@@ -31,12 +31,21 @@ const Header = ({navigation, data}) => {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity className=" bg-white  p-2.5 rounded-full">
+        <TouchableOpacity
+          className=" bg-white  p-2.5 rounded-full"
+          onPress={() => navigation.navigate('WishList')}>
           <FastImage
             source={icons.heart}
             className="w-[20px] h-[20px]"
             tintColor="black"
           />
+          {wishlistData !== null && wishlistData > 0 ? (
+            <View className="absolute right-[1px] top-[-4px] bg-red-500 rounded-full  h-[17px] w-[17px] items-center flex justify-center">
+              <Text className="text-[11px] text-center text-white">
+                {wishlistData}
+              </Text>
+            </View>
+          ) : null}
         </TouchableOpacity>
         <TouchableOpacity
           className="relative bg-white  p-2.5 rounded-full"
@@ -48,7 +57,7 @@ const Header = ({navigation, data}) => {
           />
 
           {data?.length > 0 ? (
-            <View className="absolute right-[0px] top-[0px] bg-red-500 rounded-full  h-[17px] w-[17px] items-center flex justify-center">
+            <View className="absolute right-[1px] top-[-4px] bg-red-500 rounded-full  h-[17px] w-[17px] items-center flex justify-center">
               <Text className="text-[11px] text-center text-white">
                 {data.length}
               </Text>

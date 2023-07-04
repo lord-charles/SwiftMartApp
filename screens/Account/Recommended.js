@@ -23,7 +23,7 @@ const Recommended = ({navigation}) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${base_url}products?page=${limit}&limit=12&fields=description,price,images,-category,-brand,-colors`,
+        `${base_url}products?page=${limit}&limit=12&fields=description,price,title,images,-category,-brand,-colors`,
       );
       setPopularProducts(prevPopularProducts => [
         ...prevPopularProducts,

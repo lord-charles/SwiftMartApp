@@ -29,6 +29,9 @@ import {
   Cancelled,
   ToBeShipped,
   Shipped,
+  TrackOrder,
+  WishList,
+  Category,
 } from './screens';
 import DrawerNav from './navigation/drawer/drawer1/DrawerNav1';
 import {ToastProvider} from 'react-native-toast-notifications';
@@ -193,6 +196,21 @@ export default function App() {
             <Stack.Screen
               name="Shipped"
               component={Shipped}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="TrackOrder"
+              component={TrackOrder}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="WishList"
+              component={WishList}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Category"
+              component={Category}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

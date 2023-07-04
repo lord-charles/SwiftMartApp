@@ -9,6 +9,8 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
+  Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import {base_url} from '../../utils/baseUrl';
@@ -18,11 +20,16 @@ import {icons, images} from '../../constants';
 import * as Progress from 'react-native-progress';
 import {Rating} from 'react-native-ratings';
 import {reviews} from '../../utils/data';
-import {Divider} from 'native-base';
+import {Button, Divider} from 'native-base';
 import {FilterModal} from '../../components';
 import {useToast} from 'react-native-toast-notifications';
 import config from '../../utils/axiosconfig';
 import {useFocusEffect} from '@react-navigation/native';
+import {Linking} from 'react-native';
+import FastImage from 'react-native-fast-image';
+
+const token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
 
 const ProductDetails = ({navigation, route}) => {
   const {id} = route.params;
@@ -31,6 +38,12 @@ const ProductDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(false);
   const [alsoViewed, setAlsoViewed] = useState([]);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [isOrder, setIsOrder] = useState(false);
+  const [data, setData] = useState([]);
+  const [wishlistData, setWishlistData] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const width = Dimensions.get('window').width;
 
   const getProduct = async () => {
     setLoading(true);
@@ -47,17 +60,7 @@ const ProductDetails = ({navigation, route}) => {
       console.log(err);
     }
   };
-  useEffect(() => {
-    getProduct();
-  }, []);
-  // console.log(product.data.findProduct);
 
-  const width = Dimensions.get('window').width;
-
-  const [data, setData] = useState([]);
-
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
   const getCart = async () => {
     try {
       const api = axios.create({
@@ -73,9 +76,132 @@ const ProductDetails = ({navigation, route}) => {
     }
   };
 
+  const getWishlistProducts = async () => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+      const response = await api.get(
+        `${base_url}user/wishlist/`,
+        config(token),
+      );
+      setWishlistData(response.data.wishlist.length);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const addToWishlist = async () => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+
+      const res = await api.put(
+        'products/wishlist/',
+        {
+          prodId: product.findProduct._id,
+        },
+        config(token),
+      );
+      if (res.data.added) {
+        return (
+          toast.show(`${product.findProduct.title} added to wishlist`, {
+            type: 'success',
+            placement: 'top',
+            duration: 2000,
+            offset: 30,
+            animationType: 'slide-in',
+          }),
+          getWishlistProducts()
+        );
+      } else {
+        toast.show(`${product.findProduct.title} removed from wishlist`, {
+          type: 'danger',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        }),
+          getWishlistProducts();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.show('retry', {
+        type: 'danger',
+        placement: 'top',
+        duration: 2000,
+        offset: 30,
+        animationType: 'slide-in',
+      });
+    }
+  };
+
+  const handleMessage = platform => {
+    setModalVisible(false);
+    let url;
+    const phoneNumber = '+254740315545';
+    switch (platform) {
+      case 'messages':
+        const message =
+          'Hello, I need your assistance to complete a purchase. Can you please help me?';
+        url = `sms:${encodeURIComponent(phoneNumber)}`;
+        break;
+
+      case 'whatsapp':
+        const whatsappMessage =
+          'Hello, I need your assistance to complete a purchase. Can you please help me?';
+        url = `whatsapp://send?phone=${encodeURIComponent(
+          phoneNumber,
+        )}&text=${encodeURIComponent(whatsappMessage)}`;
+        break;
+
+      case 'email':
+        const emailSubject = 'Request for Assistance: Complete Purchase';
+        const emailBody = `Dear Support Team,
+  
+  I hope this email finds you well. I am writing to seek your assistance in completing a purchase. I have encountered some difficulties during the checkout process and would appreciate any help you can provide.
+  
+  Please let me know the steps or any additional information required to successfully finalize my purchase.
+  
+  Thank you for your attention to this matter.
+  
+  Kind regards,
+  [Your Name]`;
+
+        url = `mailto:mwanikicharles226@gmail.com?subject=${encodeURIComponent(
+          emailSubject,
+        )}&body=${encodeURIComponent(emailBody)}`;
+        break;
+
+      case 'telegram':
+        const telegrammessage =
+          'Hello, I need your assistance to complete a purchase. Can you please help me?';
+
+        url = `https://t.me/${encodeURIComponent(
+          phoneNumber,
+        )}?text=${encodeURIComponent(telegrammessage)}`;
+        break;
+      case 'twitter':
+        const twitterMessage = `Hello, I need your assistance to complete a purchase. Can you please help me?`;
+        url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          twitterMessage,
+        )}`;
+        break;
+
+      default:
+        return;
+    }
+
+    Linking.openURL(url);
+  };
+
   useFocusEffect(
     useCallback(() => {
+      getProduct();
       getCart();
+      getWishlistProducts();
       return () => {
         // Clean up any subscriptions or resources if needed
       };
@@ -83,7 +209,7 @@ const ProductDetails = ({navigation, route}) => {
   );
   return (
     <View className="bg-gray-100">
-      <Header navigation={navigation} data={data} />
+      <Header navigation={navigation} data={data} wishlistData={wishlistData} />
 
       {/* filltermodal */}
       {showFilterModal && (
@@ -91,7 +217,9 @@ const ProductDetails = ({navigation, route}) => {
           isVisible={showFilterModal}
           onClose={() => setShowFilterModal(false)}
           product={product.findProduct}
+          isOrder={isOrder}
           getCart={getCart}
+          navigation={navigation}
         />
       )}
 
@@ -272,7 +400,7 @@ const ProductDetails = ({navigation, route}) => {
                       style={{tintColor: 'orange'}}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity className="">
+                  <TouchableOpacity onPress={() => addToWishlist()}>
                     <Image
                       source={icons.favourite}
                       className="w-[20px] h-[20px]"
@@ -504,7 +632,9 @@ const ProductDetails = ({navigation, route}) => {
           <View className="absolute bottom-[55px] h-[52px] w-full z-[999] bg-white flex flex-row justify-between items-center">
             {/* part 1  */}
             <View className="flex flex-row items-center space-x-2 px-2">
-              <TouchableOpacity className="border-2 border-red-500 p-1 rounded-lg">
+              <TouchableOpacity
+                className="border-2 border-red-500 p-1 rounded-lg"
+                onPress={() => setModalVisible(true)}>
                 <Image
                   source={icons.chat}
                   className="w-[25px] h-[25px]"
@@ -513,7 +643,9 @@ const ProductDetails = ({navigation, route}) => {
                   style={{tintColor: 'black'}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity className="border-2 border-red-500 p-1 rounded-lg">
+              <TouchableOpacity
+                className="border-2 border-red-500 p-1 rounded-lg"
+                onPress={() => Linking.openURL(`tel:+${254740315545}`)}>
                 <Image
                   source={icons.call}
                   className="w-[25px] h-[25px]"
@@ -522,7 +654,9 @@ const ProductDetails = ({navigation, route}) => {
                   style={{tintColor: 'black'}}
                 />
               </TouchableOpacity>
-              <TouchableOpacity className="border-2 border-red-500 p-1 rounded-lg">
+              <TouchableOpacity
+                className="border-2 border-red-500 p-1 rounded-lg"
+                onPress={() => navigation.navigate('WishList')}>
                 <Image
                   source={icons.favourite}
                   className="w-[25px] h-[25px]"
@@ -537,7 +671,9 @@ const ProductDetails = ({navigation, route}) => {
             <View className="border-2 border-red-500 w-[60%] h-[40px] flex flex-row items-center justify-between rounded-full relative top-[1px] left-[-10px] ">
               <TouchableOpacity
                 className="w-[50%]  h-full flex justify-center"
-                onPress={() => setShowFilterModal(true)}>
+                onPress={() => {
+                  setShowFilterModal(true), setIsOrder(false);
+                }}>
                 <Text className=" text-center text-[14px] text-red-500 font-bold">
                   Add To Cart
                 </Text>
@@ -546,18 +682,77 @@ const ProductDetails = ({navigation, route}) => {
               <TouchableOpacity
                 className="w-[50%] bg-red-500 h-[40px] flex justify-center rounded-r-full"
                 onPress={() => {
-                  toast.show('Task finished successfully', {
-                    type: 'success',
-                    placement: 'top',
-                    duration: 2000,
-                    offset: 30,
-                    animationType: 'slide-in',
-                  });
+                  setShowFilterModal(true), setIsOrder(true);
                 }}>
                 <Text className="text-center text-[14px] text-white font-bold">
                   Order Now
                 </Text>
               </TouchableOpacity>
+            </View>
+            <View>
+              <Modal
+                visible={modalVisible}
+                transparent={true}
+                onPress={() => setModalVisible(false)}
+                animationType="slide">
+                <View
+                  className="bg-white flex-1"
+                  style={{backgroundColor: 'rgba(0, 0, 0, 0.2)'}}>
+                  <TouchableWithoutFeedback
+                    onPress={() => setModalVisible(false)}>
+                    <View className="absolute top-0 left-0 right-0 bottom-0 " />
+                  </TouchableWithoutFeedback>
+                  <View className="relative top-[89vh] h-[14vh] bg-white rounded-md">
+                    <Text
+                      className="text-black font-bold text-center text-[15px] p-1"
+                      style={styles.customFont}>
+                      Select a messaging platform
+                    </Text>
+
+                    <View className="flex flex-row justify-evenly p-1">
+                      <TouchableOpacity
+                        onPress={() => handleMessage('messages')}>
+                        <FastImage
+                          source={icons.message2}
+                          className="w-[45px] h-[45px]"
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleMessage('whatsapp')}>
+                        <FastImage
+                          source={icons.whatsapp}
+                          className="w-[45px] h-[45px]"
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleMessage('email')}>
+                        <FastImage
+                          source={icons.gmail}
+                          className="w-[45px] h-[45px]"
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleMessage('telegram')}>
+                        <FastImage
+                          source={icons.telegram}
+                          className="w-[45px] h-[45px]"
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleMessage('twitter')}>
+                        <FastImage
+                          source={icons.twitter}
+                          className="w-[45px] h-[45px]"
+                          resizeMode="contain"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </Modal>
             </View>
           </View>
         </>

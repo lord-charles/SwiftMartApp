@@ -36,13 +36,15 @@ import {Spinner, Toast} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import {icons} from '../../constants';
+import {useFocusEffect} from '@react-navigation/native';
+
+const token =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
 
 const Home = ({navigation}) => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [specialProducts, setSpecialProducts] = useState([]);
   const [nonspecialProducts, setnonSpecialProducts] = useState([]);
-
-  const [allproducts, setAllProduct] = useState([]);
   const [popularProducts, setPopularProducts] = useState([]);
   const [FlashSaleProducts, setFlashSaleProducts] = useState([]);
   const [limit, setLimit] = useState(1);
@@ -51,6 +53,7 @@ const Home = ({navigation}) => {
   const [fastReflesh, setFastReflesh] = useState(1);
   const [location, setLocation] = useState('N/A');
   const [city, setCity] = useState('');
+  const [wishlistData, setWishlistData] = useState(null);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
@@ -202,7 +205,7 @@ const Home = ({navigation}) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${base_url}products?page=${limit}&limit=12&fields=description,price,images,-category,-brand,-colors`,
+        `${base_url}products?page=${limit}&limit=12&fields=description,title,price,images,-category,-brand,-colors`,
       );
       setPopularProducts(prevPopularProducts => [
         ...prevPopularProducts,
@@ -231,6 +234,22 @@ const Home = ({navigation}) => {
     }
   };
 
+  const getWishlistProducts = async () => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+      const response = await api.get(
+        `${base_url}user/wishlist/`,
+        config(token),
+      );
+      setWishlistData(response.data.wishlist.length);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
     try {
       requestLocationPermission();
@@ -238,7 +257,6 @@ const Home = ({navigation}) => {
       featuredData();
       specialData();
       nonspecialData();
-      // getCurrentLocation();
     } catch (error) {
       console.error(error);
     }
@@ -249,18 +267,19 @@ const Home = ({navigation}) => {
     getallProducts();
   }, [limit, fastReflesh]);
 
-  const styles = StyleSheet.create({
-    customFont: {
-      fontFamily: 'serif',
-    },
-    customColor: {
-      color: '#e52e04',
-    },
-  });
+  useFocusEffect(
+    useCallback(() => {
+      getWishlistProducts();
+
+      return () => {
+        // Clean up any subscriptions or resources if needed
+      };
+    }, []),
+  );
 
   return (
     <>
-      <Header navigation={navigation} />
+      <Header navigation={navigation} wishlistData={wishlistData} />
       <View className="bg-white items-center flex flex-row space-x-1 px-3">
         <FastImage
           source={icons.location_pin}
@@ -336,7 +355,11 @@ const Home = ({navigation}) => {
           return (
             <>
               <View className="bg-white mt-1 rounded-[5px] w-[49.4%]">
-                <ProductCard product={item} navigation={navigation} />
+                <ProductCard
+                  product={item}
+                  navigation={navigation}
+                  getWishlistProducts={getWishlistProducts}
+                />
               </View>
             </>
           );
@@ -371,4 +394,12 @@ const Home = ({navigation}) => {
   );
 };
 
+const styles = StyleSheet.create({
+  customFont: {
+    fontFamily: 'serif',
+  },
+  customColor: {
+    color: '#e52e04',
+  },
+});
 export default Home;

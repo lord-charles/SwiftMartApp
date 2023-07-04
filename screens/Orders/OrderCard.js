@@ -2,10 +2,9 @@ import {Button} from 'native-base';
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
 
-const OrderCard = ({item}) => {
+const OrderCard = ({item, navigation}) => {
   return (
     <View className="bg-white mt-1 rounded-[5px] p-2">
       <View className="flex flex-row items-center justify-between">
@@ -114,15 +113,35 @@ const OrderCard = ({item}) => {
                 </View>
 
                 <View className="flex flex-row justify-evenly relative top-2">
-                  <Button colorScheme={'green'}>Buy again</Button>
+                  <Button
+                    colorScheme={'green'}
+                    onPress={() =>
+                      navigation.navigate('ProductDetails', {
+                        id: item.products[0].product._id,
+                      })
+                    }>
+                    Buy again
+                  </Button>
                   {item.orderStatus === 'Delivered' ? (
-                    <Button colorScheme={'red'}>Review now to earn</Button>
+                    <Button
+                      colorScheme={'red'}
+                      onPress={() => {
+                        navigation.navigate('TrackOrder', {id: item._id});
+                      }}>
+                      Review now to earn
+                    </Button>
                   ) : item.orderStatus === 'Cancelled' ? (
                     <Button colorScheme={'red'}>
                       Contact us for more info
                     </Button>
                   ) : (
-                    <Button colorScheme={'red'}>Track package now</Button>
+                    <Button
+                      colorScheme={'red'}
+                      onPress={() => {
+                        navigation.navigate('TrackOrder', {id: item._id});
+                      }}>
+                      Track package now
+                    </Button>
                   )}
                 </View>
               </View>
@@ -184,15 +203,35 @@ const OrderCard = ({item}) => {
                   </View>
                 </View>
                 <View className="flex flex-row justify-evenly relative top-2">
-                  <Button colorScheme={'green'}>Buy again</Button>
+                  <Button
+                    colorScheme={'green'}
+                    onPress={() =>
+                      navigation.navigate('ProductDetails', {
+                        id: item.products[0].product._id,
+                      })
+                    }>
+                    Buy again
+                  </Button>
                   {item.orderStatus === 'Delivered' ? (
-                    <Button colorScheme={'red'}>Review now to earn</Button>
+                    <Button
+                      colorScheme={'red'}
+                      onPress={() => {
+                        navigation.navigate('TrackOrder', {id: item._id});
+                      }}>
+                      Review now to earn
+                    </Button>
                   ) : item.orderStatus === 'Cancelled' ? (
                     <Button colorScheme={'red'}>
                       Contact us for more info
                     </Button>
                   ) : (
-                    <Button colorScheme={'red'}>Track package now</Button>
+                    <Button
+                      colorScheme={'red'}
+                      onPress={() => {
+                        navigation.navigate('TrackOrder', {id: item._id});
+                      }}>
+                      Track package now
+                    </Button>
                   )}
                 </View>
               </View>
