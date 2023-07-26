@@ -1,1 +1,1 @@
-export const base_url = 'https://sore-tan-snail-coat.cyclic.app/';
+export const base_url = 'https://alive-deer-costume.cyclic.app/';
