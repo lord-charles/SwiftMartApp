@@ -13,6 +13,7 @@ import HoLoadingcantmiss from './loading/HoloadingCantmiss';
 import In24 from './loading/In24';
 import FilterModal from './modal/FilterModal';
 import ColorComponent from './Colors';
+import Slider2 from './Slider2';
 
 export {
   FlashSale,
@@ -30,4 +31,5 @@ export {
   In24,
   FilterModal,
   ColorComponent,
+  Slider2,
 };

@@ -109,58 +109,6 @@ const Home = ({navigation}) => {
     }
   };
 
-  const verifyToken = async token => {
-    try {
-      const api = axios.create({
-        baseURL: base_url,
-        headers: config(token).headers,
-      });
-
-      const myPromise = new Promise(async (resolve, reject) => {
-        try {
-          const response = await api.get(`user/verifyToken/`, config(token));
-          if (response.data.message === 'authorized') {
-          }
-
-          resolve();
-          // console.log(response);
-        } catch (err) {
-          console.log(err);
-          reject();
-        }
-      });
-
-      Toast.show({
-        type: 'promise',
-        promise: myPromise,
-        visibilityTime: 2000,
-        autoHide: true,
-        onShow: () => {
-          // Optional callback function for when the toast appears on the screen
-        },
-        onHide: () => {
-          // Optional callback function for when the toast disappears from the screen
-        },
-        onDismiss: () => {
-          // Optional callback function for when the toast is dismissed by the user
-        },
-        pendingProps: {
-          message: 'Verifying your account information. Please wait...',
-        },
-        successProps: {
-          message:
-            'Account validation completed successfully. Congratulations! 🎉',
-        },
-        errorProps: {
-          message:
-            'Unable to validate your account. Please create a new account or log in with your existing credentials.',
-        },
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const featuredData = async () => {
     try {
       const res = await axios.get(

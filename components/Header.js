@@ -53,7 +53,7 @@ const Header = ({navigation, wishlistData}) => {
           <Text
             className="text-black text-[20px] font-bold"
             style={styles.customFont}>
-            SwiftMart
+            FashionWarrior
           </Text>
         </View>
         <View className="flex flex-row space-x-6">

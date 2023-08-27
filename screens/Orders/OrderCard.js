@@ -112,7 +112,7 @@ const OrderCard = ({item, navigation}) => {
                   </View>
                 </View>
 
-                <View className="flex flex-row justify-evenly relative top-2">
+                <View className="flex flex-row justify-between  space-x-4 relative left-6 top-2">
                   <Button
                     colorScheme={'green'}
                     onPress={() =>
@@ -122,27 +122,29 @@ const OrderCard = ({item, navigation}) => {
                     }>
                     Buy again
                   </Button>
-                  {item.orderStatus === 'Delivered' ? (
-                    <Button
-                      colorScheme={'red'}
-                      onPress={() => {
-                        navigation.navigate('TrackOrder', {id: item._id});
-                      }}>
-                      Review now to earn
-                    </Button>
-                  ) : item.orderStatus === 'Cancelled' ? (
-                    <Button colorScheme={'red'}>
-                      Contact us for more info
-                    </Button>
-                  ) : (
-                    <Button
-                      colorScheme={'red'}
-                      onPress={() => {
-                        navigation.navigate('TrackOrder', {id: item._id});
-                      }}>
-                      Track package now
-                    </Button>
-                  )}
+                  <View>
+                    {item.orderStatus === 'Delivered' ? (
+                      <Button
+                        colorScheme={'#020a3b'}
+                        onPress={() => {
+                          navigation.navigate('TrackOrder', {id: item._id});
+                        }}>
+                        Review now to earn
+                      </Button>
+                    ) : item.orderStatus === 'Cancelled' ? (
+                      <Button colorScheme={'red'}>
+                        Contact us for more info
+                      </Button>
+                    ) : (
+                      <Button
+                        className="bg-blue-900"
+                        onPress={() => {
+                          navigation.navigate('TrackOrder', {id: item._id});
+                        }}>
+                        Track package now
+                      </Button>
+                    )}
+                  </View>
                 </View>
               </View>
             </View>
@@ -226,7 +228,7 @@ const OrderCard = ({item, navigation}) => {
                     </Button>
                   ) : (
                     <Button
-                      colorScheme={'red'}
+                      className="bg-blue-900"
                       onPress={() => {
                         navigation.navigate('TrackOrder', {id: item._id});
                       }}>

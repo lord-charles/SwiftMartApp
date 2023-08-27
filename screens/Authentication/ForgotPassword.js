@@ -92,16 +92,16 @@ const ForgotPassword = ({navigation}) => {
 
         <Center style={{backgroundColor: '#FFFFFF'}} className="relative">
           <View className="absolute top-[-220px] ">
-            <View className="flex items-center space-y-2">
+            <View className="flex items-center space-y-2 relative top-[-10vh]">
               <FastImage
-                source={icons.SwiftMartlogo1}
-                resizeMode="contain"
-                className="w-[150px] h-[120px]"
-                // tintColor={'gree'}
+                source={icons.warriorlogo}
+                className="w-[250px] h-[270px]"
+                resizeMode="stretch"
+                tintColor="red"
                 alt="logo"
               />
               <Text
-                className="text-white font-sans font-bold text-[16px]"
+                className="relative top-[-9vh] right-2 font-sans font-bold text-[16px] text-red-500"
                 style={styles.customFont}>
                 Forget Password!
               </Text>
@@ -110,7 +110,7 @@ const ForgotPassword = ({navigation}) => {
           <Box
             border="1"
             borderRadius="2xl"
-            className="h-[56vh] w-[90%] bg-white relative top-[-10vh] shadow-lg shadow-slate-500">
+            className="h-[56vh] w-[90%] bg-white relative top-[-8vh] shadow-lg shadow-slate-500">
             <VStack space={3} marginTop={5} marginX={7}>
               <View className="flex items-center">
                 <FastImage

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import LottieView from 'lottie-react-native';
 
 import {COLORS, constants, images, SIZES, icons} from '../../constants';
 import NextButton from './NextButton';
@@ -59,7 +60,7 @@ const OnBoarding = ({navigation}) => {
               key={`dot-${index}`}
               className="rounded-full"
               style={{
-                backgroundColor: dotColor,
+                backgroundColor: 'white',
                 width: dotWidth,
                 height: dotHeight,
               }}
@@ -72,12 +73,13 @@ const OnBoarding = ({navigation}) => {
 
   function renderHeaderlogo() {
     return (
-      <View className="items-center z-[999] relative top-[40px] bg-white">
+      <View
+        className="items-center z-[999] relative top-[-25px] h-[200px]"
+        style={{backgroundColor: '#020a3b'}}>
         <FastImage
-          source={icons.SwiftMartlogo1}
-          resizeMode="contain"
-          className="w-[150px] h-[120px]"
-          // tintColor={'gree'}
+          source={icons.warriorlogo}
+          className="w-[250px] h-[270px]"
+          resizeMode="stretch"
           alt="logo"
         />
       </View>
@@ -85,7 +87,7 @@ const OnBoarding = ({navigation}) => {
   }
   function renderFooter() {
     return (
-      <View className="bg-white">
+      <View style={{backgroundColor: '#020a3b'}}>
         <View className="relative top-[-210px]">
           <Dots />
         </View>
@@ -134,7 +136,8 @@ const OnBoarding = ({navigation}) => {
       style={{
         flex: 1,
       }}
-      className="h-full bg-white">
+      className="h-full"
+      style={{backgroundColor: '#020a3b'}}>
       {/* renderHeaderlogo */}
       {renderHeaderlogo()}
 
@@ -146,6 +149,7 @@ const OnBoarding = ({navigation}) => {
         scrollEventThrottle={16}
         snapToAlignment="center" // snapss on a page
         showsHorizontalScrollIndicator={false}
+        white
         keyExtractor={item => item.id}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {x: scrollX}}}],
@@ -155,37 +159,35 @@ const OnBoarding = ({navigation}) => {
         renderItem={({item}) => {
           return (
             <View>
-              <View className="relative top-[6vh]">
-                {/* <Image
+              <View className="relative top-[-4vh]">
+                <LottieView
                   source={item.bannerImage}
-                  className="w-[390px] h-[400px]"
-                  resizeMode="contain"
-                  animated={true}
-                /> */}
-                <FastImage
-                  source={item.bannerImage}
-                  resizeMode={FastImage.resizeMode.contain}
-                  className="w-[390px] h-[400px]"
+                  autoPlay
+                  loop
+                  width={390}
+                  height={390}
                 />
               </View>
               {/* DETAILS */}
-              <View className="items-center  w-screen  relative top-[-58px] bg-transparent">
-                <Text
-                  className="font-extrabold text-[23px] text-red-500 text-center  relative top-[90px]"
-                  style={styles.customFont}>
-                  {item.title}
-                </Text>
-              </View>
+              <View className="relative top-[39vh]">
+                <View className="items-center  w-screen  relative top-[-58px] bg-transparent">
+                  <Text
+                    className="font-extrabold text-[23px] text-white text-center  relative top-[90px]"
+                    style={styles.customFont}>
+                    {item.title}
+                  </Text>
+                </View>
 
-              <View
-                colors={['transparent', '#131313', '#000000']}
-                className="relative top-[40px]  w-screen h-[110px]">
-                <Text
-                  className=" text-[14px] text-red-500 mt-2  text-center px-[10px]
+                <View
+                  colors={['transparent', '#131313', '#000000']}
+                  className="relative top-[40px]  w-screen h-[110px]">
+                  <Text
+                    className=" text-[14px] text-white mt-2  text-center px-[10px]
               "
-                  style={styles.customFont}>
-                  {item.description}
-                </Text>
+                    style={styles.customFont}>
+                    {item.description}
+                  </Text>
+                </View>
               </View>
             </View>
           );

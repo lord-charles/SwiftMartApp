@@ -39,19 +39,14 @@ const Otp = ({navigation}) => {
 
         <Center style={{backgroundColor: '#FFFFFF'}} className="relative">
           <View className="absolute top-[-220px] ">
-            <View className="flex items-center space-y-2">
+            <View className="flex items-center space-y-2 relative top-[-9vh]">
               <FastImage
-                source={icons.SwiftMartlogo1}
-                resizeMode="contain"
-                className="w-[150px] h-[120px]"
-                // tintColor={'gree'}
+                source={icons.warriorlogo}
+                className="w-[250px] h-[270px]"
+                resizeMode="stretch"
+                tintColor="red"
                 alt="logo"
               />
-              <Text
-                className="text-white font-sans font-bold text-[17px]"
-                style={styles.customFont}>
-                Forget Password!
-              </Text>
             </View>
           </View>
           <Box

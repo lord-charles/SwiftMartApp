@@ -50,16 +50,16 @@ const NewPassword = ({navigation}) => {
 
         <Center style={{backgroundColor: '#FFFFFF'}} className="relative">
           <View className="absolute top-[-220px] ">
-            <View className="flex items-center space-y-2">
+            <View className="flex items-center space-y-2 relative top-[-10vh]">
               <FastImage
-                source={icons.SwiftMartlogo1}
-                resizeMode="contain"
-                className="w-[150px] h-[120px]"
-                // tintColor={'gree'}
+                source={icons.warriorlogo}
+                className="w-[250px] h-[270px]"
+                resizeMode="stretch"
+                tintColor="red"
                 alt="logo"
               />
               <Text
-                className="text-white font-sans font-bold text-[17px]"
+                className="text-red-500 font-sans font-bold text-[17px] top-[-9vh] relative right-2"
                 style={styles.customFont}>
                 Create New Password
               </Text>
@@ -68,7 +68,7 @@ const NewPassword = ({navigation}) => {
           <Box
             border="1"
             borderRadius="2xl"
-            className="h-[62vh] w-[90%] bg-white relative top-[-10vh] shadow-lg shadow-slate-500">
+            className="h-[62vh] w-[90%] bg-white relative top-[-8vh] shadow-lg shadow-slate-500">
             <VStack space={3} marginX={7}>
               <View className="flex items-center">
                 <FastImage

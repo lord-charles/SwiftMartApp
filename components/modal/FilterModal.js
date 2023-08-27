@@ -321,7 +321,8 @@ const FilterModal = ({
             </View>
             {product.quantity > 0 ? (
               <TouchableOpacity
-                className="absolute top-[460px] w-full  h-[50px] bg-red-500 rounded-full items-center justify-center"
+                className="absolute top-[460px] w-full  h-[50px] rounded-full items-center justify-center"
+                style={{backgroundColor: '#020a3b'}}
                 onPress={() => handleCartData()}>
                 <Text className="text-white text-[17px] font-bold">OK</Text>
               </TouchableOpacity>

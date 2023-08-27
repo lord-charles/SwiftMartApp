@@ -239,7 +239,7 @@ const Payment = ({route, navigation}) => {
           className="py-3">
           <Button
             mt={2}
-            className="bg-green-500 text-white"
+            className="bg-blue-900 text-white"
             style={styles.customFont}
             disabled={true}>
             <View>
@@ -275,9 +275,8 @@ const Payment = ({route, navigation}) => {
           className="bg-white text-white"
           style={styles.customFont}
           variant={'outline'}
-          colorScheme={'danger'}
           color={'yellow.500'}
-          borderColor={'red.600'}
+          borderColor={'blue.900'}
           disabled={true}>
           <View>
             <Text

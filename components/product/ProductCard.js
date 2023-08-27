@@ -86,7 +86,7 @@ const ProductCard = ({product, navigation, getWishlistProducts}) => {
       <View className="flex flex-row space-x-9 items-center">
         <Rating
           type="custom"
-          ratingColor="orange"
+          ratingColor="#020a3b"
           ratingBackgroundColor="#c8c7c8"
           ratingCount={5}
           imageSize={15}

@@ -557,13 +557,12 @@ const Cart = ({navigation}) => {
               <View className="flex flex-row items-center space-x-2 mt-4.5">
                 <View className="flex flex-row items-center space-x-2">
                   <Text className="text-black">Total:</Text>
-                  <Text className="text-red-500" style={styles.customFont}>
+                  <Text className="text-black" style={styles.customFont}>
                     {Math.ceil(total).toLocaleString()}
                   </Text>
                 </View>
                 <Button
-                  colorScheme={'red'}
-                  className="w-[110px]"
+                  className="w-[110px] bg-[#020a3b]"
                   onPress={() => {
                     addToCart();
                   }}>

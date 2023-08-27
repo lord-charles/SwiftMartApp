@@ -126,30 +126,30 @@ const SignUp = ({navigation}) => {
         <Center style={{backgroundColor: '#FFFFFF'}} className="relative">
           <View className="relative top-[-250px] ">
             <View className="absolute w-[90vw] top-[0px] ">
-              <View className="flex items-center space-y-2 justify-center">
+              <View className="flex items-center space-y-2 justify-center relative top-[-10vh]">
                 <FastImage
-                  source={icons.SwiftMartlogo1}
-                  resizeMode="contain"
-                  className="w-[150px] h-[120px]"
-                  // tintColor={'gree'}
+                  source={icons.warriorlogo}
+                  className="w-[250px] h-[270px]"
+                  resizeMode="stretch"
+                  tintColor="#020a3b"
                   alt="logo"
                 />
                 <Text
-                  className="text-white font-sans font-bold text-[16px]"
+                  className="text-black font-sans font-bold text-[16px] relative top-[-8vh] right-2"
                   style={styles.customFont}>
-                  Join SwiftMart
+                  Join FashionWarrior
                 </Text>
               </View>
             </View>
             <Box
-              className="h-[63vh] w-[90vw] bg-white relative top-[16vh] shadow-lg shadow-slate-500"
+              className="h-[63vh] w-[90vw] bg-white relative top-[20vh] shadow-lg shadow-slate-500"
               border="1"
               borderRadius="2xl">
               <VStack space={3} marginTop={5} marginX={7}>
                 <FormControl isRequired>
                   <FormControl.Label>
                     <Text
-                      className="text-red-600 font-bold"
+                      className="text-black font-bold"
                       style={styles.customFont}>
                       Name
                     </Text>
@@ -159,7 +159,7 @@ const SignUp = ({navigation}) => {
                     value={name}
                     onChangeText={handleNameChange}
                     className="text-black text-[14px]"
-                    borderColor="red.600"
+                    borderColor="blue.900"
                   />
                 </FormControl>
 
@@ -168,7 +168,7 @@ const SignUp = ({navigation}) => {
                     <>
                       <FormControl.Label>
                         <Text
-                          className="text-red-600 font-bold"
+                          className="text-black font-bold"
                           style={styles.customFont}>
                           Email
                         </Text>
@@ -181,7 +181,7 @@ const SignUp = ({navigation}) => {
                         keyboardType="email-address"
                         returnKeyType="next"
                         className="text-black text-[14px]"
-                        borderColor="red.600"
+                        borderColor="blue.900"
                       />
                       <View className="flex flex-row items-center justify-between ">
                         <View>
@@ -196,7 +196,7 @@ const SignUp = ({navigation}) => {
                           onPress={handleShowLoginMethod}
                           className="relative  top-[3px] ">
                           <Text
-                            className="text-red-600 italic text-[13px] mt-1 underline text-right"
+                            className="text-black italic text-[13px] mt-1 underline text-right"
                             style={styles.customFont}>
                             or, Phone number
                           </Text>
@@ -207,7 +207,7 @@ const SignUp = ({navigation}) => {
                     <FormControl isRequired isInvalid={phoneNumberError !== ''}>
                       <FormControl.Label>
                         <Text
-                          className="text-red-600 font-bold"
+                          className="text-black font-bold"
                           style={styles.customFont}>
                           Phone Number
                         </Text>
@@ -218,7 +218,7 @@ const SignUp = ({navigation}) => {
                         value={phoneNumber}
                         keyboardType="numeric"
                         returnKeyType="done"
-                        borderColor="red.600"
+                        borderColor="blue.900"
                         className="text-black text-[14px]"
                         InputLeftElement={
                           <View>
@@ -235,7 +235,7 @@ const SignUp = ({navigation}) => {
                               renderFlagButton={() => (
                                 <View className="flex flex-row items-center ml-[5px]">
                                   <FlagButton countryCode="KE" withEmoji />
-                                  <Text className="text-red-600 font-semibold">
+                                  <Text className="text-black font-semibold">
                                     +254
                                   </Text>
                                 </View>
@@ -258,7 +258,7 @@ const SignUp = ({navigation}) => {
                           onPress={handleShowLoginMethod}
                           className="relative top-[3px]">
                           <Text
-                            className="text-red-600 italic text-[13px] mt-1 underline text-right"
+                            className="text-black italic text-[13px] mt-1 underline text-right"
                             style={styles.customFont}>
                             or, Email
                           </Text>
@@ -271,7 +271,7 @@ const SignUp = ({navigation}) => {
                 <FormControl isRequired>
                   <FormControl.Label>
                     <Text
-                      className="text-red-600 font-bold"
+                      className="text-black font-bold"
                       style={styles.customFont}>
                       Password
                     </Text>
@@ -283,7 +283,7 @@ const SignUp = ({navigation}) => {
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
                     returnKeyType="done"
-                    borderColor="red.600"
+                    borderColor="blue.900"
                     className="text-black text-[14px]"
                     InputRightElement={
                       <View>
@@ -314,7 +314,7 @@ const SignUp = ({navigation}) => {
                 <FormControl isRequired className="pb-[10px]">
                   <FormControl.Label>
                     <Text
-                      className="text-red-600 font-bold"
+                      className="text-black font-bold"
                       style={styles.customFont}>
                       Confirm Password
                     </Text>
@@ -326,7 +326,7 @@ const SignUp = ({navigation}) => {
                     secureTextEntry={!showPassword}
                     autoCapitalize="none"
                     returnKeyType="done"
-                    borderColor="red.600"
+                    borderColor="blue.900"
                     className="text-black text-[14px]"
                     InputRightElement={
                       <View>
@@ -357,9 +357,9 @@ const SignUp = ({navigation}) => {
                 <View>
                   <View className="pb-1">
                     <Checkbox
+                      colorScheme="success"
                       shadow={2}
                       value="danger"
-                      colorScheme="danger"
                       defaultIsChecked>
                       <View className="flex-row items-center">
                         <Text
@@ -372,7 +372,7 @@ const SignUp = ({navigation}) => {
                             console.log('Terms and Conditions pressed')
                           }>
                           <Text
-                            className="text-red-500 underline font-serif text-[12px]"
+                            className="text-black underline font-serif text-[12px]"
                             style={styles.customFont}>
                             Terms and Conditions
                           </Text>
@@ -381,7 +381,7 @@ const SignUp = ({navigation}) => {
                         <TouchableOpacity
                           onPress={() => console.log('Privacy Policy pressed')}>
                           <Text
-                            className="text-red-500 underline font-serif text-[12px]"
+                            className="text-black underline font-serif text-[12px]"
                             style={styles.customFont}>
                             Privacy Policy
                           </Text>
@@ -393,7 +393,7 @@ const SignUp = ({navigation}) => {
                   <TouchableOpacity>
                     <Button
                       mt={2}
-                      colorScheme="red"
+                      className="bg-blue-900"
                       // onPress={handleSignIn}
                       disabled={false}>
                       <Text
@@ -413,7 +413,7 @@ const SignUp = ({navigation}) => {
                     <TouchableOpacity
                       onPress={() => navigation.replace('SignIn')}>
                       <Text
-                        className="text-red-600 font-bold"
+                        className="text-black font-bold"
                         style={styles.customFont}>
                         Login
                       </Text>

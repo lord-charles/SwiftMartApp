@@ -313,17 +313,17 @@ const ProductDetails = ({navigation, route}) => {
               {/* ifinflashsale  */}
               <View>
                 {product.flashSuccess ? (
-                  <View className="h-[100px] w-full border  border-red-500 rounded-md ">
+                  <View className="h-[100px] w-full border  border-blue-900 rounded-md ">
                     <View
                       className="flex flex-row justify-between"
-                      style={{backgroundColor: '#e52e04'}}>
+                      style={{backgroundColor: '#020a3b'}}>
                       <View className="h-[40px] flex flex-row items-center">
                         <Image
                           source={icons.flash_deal}
                           alt="image flash"
                           className="w-[30px] h-[20px]"
                           resizeMode="contain"
-                          style={{tintColor: 'orange'}}
+                          tintColor="white"
                         />
                         <Text className="text-white font-bold">
                           flash sales
@@ -357,7 +357,7 @@ const ProductDetails = ({navigation, route}) => {
                           product.findProduct?.price,
                         ).toLocaleString()}
                       </Text>
-                      <Text className="text-orange-500 text-[11px] bg-orange-100 rounded-md p-1">
+                      <Text className="text-blue-900 text-[11px] bg-orange-100 rounded-md p-1">
                         -{product.flashSaleProduct[0].discountPercentage}%
                       </Text>
                     </View>
@@ -372,8 +372,8 @@ const ProductDetails = ({navigation, route}) => {
                         }
                         width={270}
                         height={8}
-                        className="text-orange-500"
-                        color="orange"
+                        className="text-blue-900"
+                        color="#020a3b"
                       />
                     </View>
                   </View>
@@ -384,7 +384,7 @@ const ProductDetails = ({navigation, route}) => {
               <View className="flex flex-row justify-between items-center  mt-[5px]">
                 <Rating
                   type="custom"
-                  ratingColor="orange"
+                  ratingColor="#020a3b"
                   ratingBackgroundColor="#c8c7c8"
                   ratingCount={5}
                   imageSize={15}
@@ -397,14 +397,14 @@ const ProductDetails = ({navigation, route}) => {
                     <Image
                       source={icons.share}
                       className="w-[20px] h-[20px]"
-                      style={{tintColor: 'orange'}}
+                      style={{tintColor: '#020a3b'}}
                     />
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => addToWishlist()}>
                     <Image
                       source={icons.favourite}
                       className="w-[20px] h-[20px]"
-                      style={{tintColor: 'orange'}}
+                      style={{tintColor: '#020a3b'}}
                     />
                   </TouchableOpacity>
                 </View>
@@ -421,7 +421,7 @@ const ProductDetails = ({navigation, route}) => {
                   source={icons.shipping}
                   className="w-[20px] h-[20px]"
                   resizeMode="contain"
-                  style={{tintColor: 'orange'}}
+                  style={{tintColor: '#020a3b'}}
                 />
                 <Text className="text-black text-[12px]">
                   Free delivery for orders above Ksh 1999 in selected major
@@ -433,10 +433,10 @@ const ProductDetails = ({navigation, route}) => {
                   source={icons.securepay}
                   className="w-[20px] h-[20px]"
                   resizeMode="contain"
-                  style={{tintColor: 'orange'}}
+                  style={{tintColor: '#020a3b'}}
                 />
                 <Text className="text-black text-[12px]">
-                  Easy and safer payments via the SwiftMart App.
+                  Easy and safer payments via the FashionWarrior App.
                 </Text>
               </View>
             </View>
@@ -450,15 +450,8 @@ const ProductDetails = ({navigation, route}) => {
                 <Text
                   className="text-black font-bold"
                   style={styles.customFont}>
-                  SwiftMart
+                  FashionWarrior
                 </Text>
-
-                <Image
-                  source={icons.express}
-                  className="w-[70px] h-[70px] absolute left-[64px]"
-                  resizeMode="contain"
-                  alt="image"
-                />
               </View>
               <View className="flex flex-row items-center space-x-2 ">
                 <Image
@@ -563,7 +556,7 @@ const ProductDetails = ({navigation, route}) => {
                       <View className="flex items-start py-2">
                         <Rating
                           type="custom"
-                          ratingColor="orange"
+                          ratingColor="#020a3b"
                           ratingBackgroundColor="#c8c7c8"
                           ratingCount={5}
                           imageSize={15}
@@ -633,7 +626,7 @@ const ProductDetails = ({navigation, route}) => {
             {/* part 1  */}
             <View className="flex flex-row items-center space-x-2 px-2">
               <TouchableOpacity
-                className="border-2 border-red-500 p-1 rounded-lg"
+                className="border-2 p-1 rounded-lg"
                 onPress={() => setModalVisible(true)}>
                 <Image
                   source={icons.chat}
@@ -644,7 +637,7 @@ const ProductDetails = ({navigation, route}) => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                className="border-2 border-red-500 p-1 rounded-lg"
+                className="border-2 p-1 rounded-lg"
                 onPress={() => Linking.openURL(`tel:+${254740315545}`)}>
                 <Image
                   source={icons.call}
@@ -655,7 +648,7 @@ const ProductDetails = ({navigation, route}) => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                className="border-2 border-red-500 p-1 rounded-lg"
+                className="border-2 p-1 rounded-lg"
                 onPress={() => navigation.navigate('WishList')}>
                 <Image
                   source={icons.favourite}
@@ -668,19 +661,20 @@ const ProductDetails = ({navigation, route}) => {
             </View>
 
             {/* part 2  */}
-            <View className="border-2 border-red-500 w-[60%] h-[40px] flex flex-row items-center justify-between rounded-full relative top-[1px] left-[-10px] ">
+            <View className="border-2 w-[60%] h-[40px] flex flex-row items-center justify-between rounded-full relative top-[1px] left-[-10px] ">
               <TouchableOpacity
                 className="w-[50%]  h-full flex justify-center"
                 onPress={() => {
                   setShowFilterModal(true), setIsOrder(false);
                 }}>
-                <Text className=" text-center text-[14px] text-red-500 font-bold">
+                <Text className=" text-center text-[14px] text-black font-bold">
                   Add To Cart
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                className="w-[50%] bg-red-500 h-[40px] flex justify-center rounded-r-full"
+                style={{backgroundColor: '#020a3b'}}
+                className="w-[55%] h-[40px] flex justify-center rounded-r-full"
                 onPress={() => {
                   setShowFilterModal(true), setIsOrder(true);
                 }}>

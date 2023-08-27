@@ -83,14 +83,19 @@ const SignIn = ({navigation}) => {
       <View>
         <Center style={{backgroundColor: '#FFFFFF'}} className="relative">
           <View className="absolute top-[40px] ">
-            <View className="flex items-center space-y-2">
+            <View className="flex items-center space-y-2 relative top-[-8vh]">
               <FastImage
-                source={icons.SwiftMartlogo1}
-                resizeMode="contain"
-                className="w-[150px] h-[120px]"
-                // tintColor={'gree'}
+                source={icons.warriorlogo}
+                className="w-[250px] h-[270px]"
+                resizeMode="stretch"
+                tintColor="#020a3b"
                 alt="logo"
               />
+              <Text
+                className="text-black font-sans font-bold text-[16px] relative top-[-8.9vh] right-2"
+                style={styles.customFont}>
+                Welcome back
+              </Text>
             </View>
           </View>
           <Box
@@ -103,7 +108,7 @@ const SignIn = ({navigation}) => {
                   <>
                     <FormControl.Label>
                       <Text
-                        className="text-red-600 font-bold"
+                        className="text-black font-bold"
                         style={styles.customFont}>
                         Email
                       </Text>
@@ -131,7 +136,7 @@ const SignIn = ({navigation}) => {
                         onPress={handleShowLoginMethod}
                         className="relative  top-[3px]">
                         <Text
-                          className="text-red-600 italic text-[13px] mt-1 underline text-right"
+                          className="text-black italic text-[13px] mt-1 underline text-right"
                           style={styles.customFont}>
                           or, Phone number
                         </Text>
@@ -142,7 +147,7 @@ const SignIn = ({navigation}) => {
                   <FormControl isRequired isInvalid={phoneNumberError !== ''}>
                     <FormControl.Label>
                       <Text
-                        className="text-red-600 font-bold"
+                        className="text-black font-bold"
                         style={styles.customFont}>
                         Phone Number
                       </Text>
@@ -153,7 +158,7 @@ const SignIn = ({navigation}) => {
                       value={phoneNumber}
                       keyboardType="numeric"
                       returnKeyType="done"
-                      borderColor="red.600"
+                      borderColor="blue.900"
                       className="text-black text-[14px]"
                       InputLeftElement={
                         <View>
@@ -170,7 +175,7 @@ const SignIn = ({navigation}) => {
                             renderFlagButton={() => (
                               <View className="flex flex-row items-center ml-[5px]">
                                 <FlagButton countryCode="KE" withEmoji />
-                                <Text className="text-red-600 font-semibold">
+                                <Text className="text-black font-semibold">
                                   +254
                                 </Text>
                               </View>
@@ -193,7 +198,7 @@ const SignIn = ({navigation}) => {
                         onPress={handleShowLoginMethod}
                         className="relative left-[238px] top-[3px]">
                         <Text
-                          className="text-red-600 italic text-[13px] mt-1 underline text-right"
+                          className="text-black italic text-[13px] mt-1 underline text-right"
                           style={styles.customFont}>
                           or, use Email
                         </Text>
@@ -205,7 +210,7 @@ const SignIn = ({navigation}) => {
               <FormControl isRequired>
                 <FormControl.Label>
                   <Text
-                    className="text-red-600 font-bold"
+                    className="text-black font-bold"
                     style={styles.customFont}>
                     Password
                   </Text>
@@ -217,7 +222,7 @@ const SignIn = ({navigation}) => {
                   secureTextEntry={!showPassword}
                   autoCapitalize="none"
                   returnKeyType="done"
-                  borderColor="red.600"
+                  borderColor="blue.900"
                   className="text-black text-[14px]"
                   InputRightElement={
                     <View>
@@ -247,7 +252,7 @@ const SignIn = ({navigation}) => {
                   onPress={() => navigation.navigate('ForgotPassword')}
                   className="relative  top-[3px]">
                   <Text
-                    className="text-red-600 italic text-[13px] mt-1 underline text-right"
+                    className="text-black italic text-[13px] mt-1 underline text-right"
                     style={styles.customFont}>
                     Forgot Password?
                   </Text>
@@ -256,7 +261,7 @@ const SignIn = ({navigation}) => {
               <TouchableOpacity>
                 <Button
                   mt={2}
-                  className="bg-red-600 text-white font-bold"
+                  className="bg-blue-900 text-white font-bold"
                   onPress={() => navigation.navigate('DrawerNav')}
                   style={styles.customFont}>
                   <Text
@@ -275,7 +280,7 @@ const SignIn = ({navigation}) => {
               <TouchableOpacity>
                 <Button
                   mt={2}
-                  className="bg-red-300 text-white font-bold"
+                  className="bg-blue-900 text-white font-bold"
                   onPress={() => navigation.navigate('SignUp')}
                   style={styles.customFont}>
                   <Text

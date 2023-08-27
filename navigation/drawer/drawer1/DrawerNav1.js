@@ -24,12 +24,16 @@ const DrawerNav = () => {
           component={_.component}
           options={{
             drawerIcon: () => (
-              <FastImage source={_.icon} style={{width: 20, height: 20}} />
+              <FastImage
+                source={_.icon}
+                style={{width: 20, height: 20}}
+                tintColor={'white'}
+              />
             ),
             swipeEnabled: false,
             overlayColor: 'transparent',
             drawerLabelStyle: {
-              color: 'black',
+              color: 'white',
               fontSize: 13,
             },
           }}

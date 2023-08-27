@@ -8,13 +8,21 @@ const ColorComponent = ({color, setSelectedColor, selectedColor}) => {
         className={`w-[74px]  h-[50px] rounded-md border-2 items-center justify-center`}
         style={{
           borderColor: color.code,
-          backgroundColor: selectedColor == color.name ? 'orange' : 'white',
+          backgroundColor: selectedColor == color.name ? '#020a3b' : 'white',
         }}
         onPress={() => {
           setSelectedColor(color.name);
         }}>
-        <Text className="text-black capitalize"> {color.name}</Text>
-        <Text className="text-[11px] text-black">
+        <Text
+          className={`${
+            selectedColor === color.name ? 'text-white' : 'text-black'
+          } capitalize`}>
+          {color.name}
+        </Text>
+        <Text
+          className={`${
+            selectedColor === color.name ? 'text-white' : 'text-black'
+          }  text-[11px] `}>
           in Stock:{color.availability}
         </Text>
       </TouchableOpacity>

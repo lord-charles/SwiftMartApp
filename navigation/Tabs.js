@@ -92,8 +92,9 @@ export default function Tabs({navigation}) {
   useEffect(() => {
     drawerStatus === 'open' ? openDrawer() : closeDrawer();
   }, [drawerStatus, openDrawer, closeDrawer]);
+
   return (
-    <View style={{backgroundColor: '#e52e04', flex: 1}}>
+    <View style={{backgroundColor: '#020a3b', flex: 1}}>
       <Animated.View
         style={{
           transform: [{scale: scaleValue}, {translateX: offsetValue}],
@@ -127,7 +128,7 @@ export default function Tabs({navigation}) {
               top: 0,
               height: 5,
               width: 80,
-              backgroundColor: 'red',
+              backgroundColor: '#020a3b',
               borderBottomRightRadius: 3,
               borderBottomLeftRadius: 3,
             },
@@ -145,7 +146,7 @@ export default function Tabs({navigation}) {
               borderColor: '#E6E7E8',
               backgroundColor: 'white',
             },
-            tabBarActiveTintColor: 'red',
+            tabBarActiveTintColor: '#020a3b',
             tabBarInactiveTintColor: 'black',
           }}>
           {TabArr.map((tab, index) => {
@@ -161,7 +162,7 @@ export default function Tabs({navigation}) {
                       style={{
                         width: 23,
                         height: 23,
-                        tintColor: focused ? 'red' : 'black',
+                        tintColor: focused ? '#020a3b' : 'gray',
                       }}
                       resizeMode="contain"
                     />

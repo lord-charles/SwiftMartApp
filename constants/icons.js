@@ -109,8 +109,12 @@ const gmail = require('../assets/icons/gmail.png');
 const twitter = require('../assets/icons/twitter.png');
 const telegram = require('../assets/icons/telegram.png');
 const orders_outline = require('../assets/icons/orders_outline.png');
+const warriorlogo = require('../assets/warrior/warriorlogo.png');
+const warriorlogo2 = require('../assets/warrior/Warrior_LOGO.png');
 
 export default {
+  warriorlogo2,
+  warriorlogo,
   orders_outline,
   message2,
   whatsapp,

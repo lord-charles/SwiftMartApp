@@ -3,6 +3,7 @@ import {View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {Svg, Circle} from 'react-native-svg';
 import {icons} from '../../constants';
 import {Animated, Easing} from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 const {Value, timing} = Animated;
 
@@ -57,12 +58,18 @@ const NextButton = ({percentage, currentIndex, navigation}) => {
           onPress={() => navigation.replace('DrawerNav')}>
           <View className="bg-gray-100  rounded-full h-[60px] w-[60px] items-center justify-center">
             {currentIndex !== 2 ? (
-              <Image
+              <FastImage
                 source={icons.right_arrow2}
                 className="w-[31px] h-[20px] "
+                tintColor={'#020a3b'}
+                resizeMode="contain"
               />
             ) : (
-              <Image source={icons.go} className="w-[50px] h-[50px]" />
+              <FastImage
+                source={icons.go}
+                className="w-[50px] h-[50px]"
+                resizeMode="contain"
+              />
             )}
           </View>
         </TouchableOpacity>

@@ -196,9 +196,9 @@ const MyOrders = ({navigation}) => {
         screenOptions={({route}) => ({
           tabBarLabelStyle: {fontSize: 8},
           tabBarStyle: {backgroundColor: 'white'},
-          tabBarActiveTintColor: 'red',
-          tabBarInactiveTintColor: 'black',
-          tabBarIndicatorStyle: {backgroundColor: 'red'},
+          tabBarActiveTintColor: '#020a3b',
+          tabBarInactiveTintColor: 'gray',
+          tabBarIndicatorStyle: {backgroundColor: '#020a3b'},
           tabBarBadge: () => {
             return <Badge badgeData={badgeData} route={route} />;
           },

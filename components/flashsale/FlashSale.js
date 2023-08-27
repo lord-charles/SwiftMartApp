@@ -23,11 +23,11 @@ const FlashSale = ({products, navigation}) => {
             onPress={() => alert('hello')}
             size={9}
             digitStyle={{backgroundColor: '#E6E7E8'}}
-            digitTxtStyle={{color: 'red'}}
+            digitTxtStyle={{color: '#020a3b'}}
             timeToShow={['H', 'M', 'S']}
             timeLabels={{m: null, s: null}}
             showSeparator
-            separatorStyle={{color: 'red'}}
+            separatorStyle={{color: '#020a3b'}}
           />
         </View>
       </View>
@@ -43,10 +43,10 @@ const FlashSale = ({products, navigation}) => {
             return (
               <>
                 <TouchableOpacity
-                  className="bg-white mt-1  "
+                  className="bg-white mt-1 items-center space-y-1"
                   onPress={() =>
                     navigation.navigate('ProductDetails', {
-                      id: item.productId._id,
+                      id: item.productId?._id,
                     })
                   }>
                   <Image
@@ -55,16 +55,16 @@ const FlashSale = ({products, navigation}) => {
                     className="w-[100px] h-[100px]"
                     resizeMode="contain"
                   />
-                  <Text className="text-red-500 text-[12px] font-bold text-center mt-[10px]">
+                  <Text className="text-[#020a3b] text-[12px] font-bold text-center mt-[10px]">
                     Ksh{' '}
                     {Math.floor(
-                      item.productId.price -
-                        item.productId.price * (item.discountPercentage / 100),
+                      item.productId?.price -
+                        item.productId?.price * (item.discountPercentage / 100),
                     ).toLocaleString()}
                   </Text>
                   <View>
                     <View>
-                      <Text className="text-gray-500 text-[10px]">
+                      <Text className="text-gray-500 text-[10px] text-center">
                         Units left: {item.quantity}
                       </Text>
                     </View>
@@ -73,7 +73,7 @@ const FlashSale = ({products, navigation}) => {
                       width={90}
                       height={4}
                       className="text-red-500"
-                      color="#e52e04"
+                      color="#020a3b"
                     />
                   </View>
                 </TouchableOpacity>

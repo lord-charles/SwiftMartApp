@@ -1,55 +1,20 @@
 export const HomeCorousel = [
   {
-    image: require('../assets/images/slider_1.png'),
+    image: require('../assets/warrior/banners-2.jpg'),
     description: '',
   },
   {
-    image: require('../assets/images/slider_2.png'),
+    image: require('../assets/warrior/banners-3.jpg'),
 
     description: '',
   },
   {
-    image: require('../assets/images/slider_3.png'),
+    image: require('../assets/warrior/banners-4.jpg'),
 
     description: '',
   },
   {
-    image: require('../assets/images/slider_4.png'),
-
-    description: '',
-  },
-  {
-    image: require('../assets/images/jum4.jpg'),
-
-    description: '',
-  },
-  {
-    image: require('../assets/images/jum6.gif'),
-
-    description: '',
-  },
-  {
-    image: require('../assets/images/jum7.jpg'),
-
-    description: '',
-  },
-  {
-    image: require('../assets/images/jum8.jpg'),
-
-    description: '',
-  },
-  {
-    image: require('../assets/images/jum9.jpg'),
-
-    description: '',
-  },
-  {
-    image: require('../assets/images/main-banner-1.jpg'),
-
-    description: '',
-  },
-  {
-    image: require('../assets/images/main-banner.jpg'),
+    image: require('../assets/warrior/banners.jpg'),
 
     description: '',
   },
@@ -57,64 +22,57 @@ export const HomeCorousel = [
 
 export const Categories = [
   {
-    image: require('../assets/images/categories/Laptops.png'),
+    image: require('../assets/warrior/Hood-8.jpg'),
 
-    description: 'Laptops',
+    description: 'Hoodie',
     _id: 1,
   },
   {
-    image: require('../assets/images/categories/TVs.png'),
+    image: require('../assets/warrior/Hood-3.jpg'),
 
-    description: 'Tvs',
+    description: 'Hoodie',
     _id: 2,
   },
   {
-    image: require('../assets/images/categories/phones.png'),
+    image: require('../assets/warrior/Hood-6.jpg'),
 
-    description: 'Phones',
+    description: 'Hoodie',
     _id: 3,
   },
   {
-    image: require('../assets/images/categories/Speakers.png'),
+    image: require('../assets/warrior/croptop.jpg'),
 
-    description: 'Speakers',
+    description: 'Croptop',
     _id: 4,
   },
   {
-    image: require('../assets/images/categories/beauty.png'),
-    description: 'Beauty',
+    image: require('../assets/warrior/croptop-2.jpg'),
+    description: 'Croptop',
     _id: 5,
   },
   {
-    image: require('../assets/images/categories/MensClothing.png'),
+    image: require('../assets/warrior/croptop-7.jpg'),
 
-    description: 'Mens clothing',
+    description: 'Croptop',
     _id: 6,
   },
 
   {
-    image: require('../assets/images/categories/SmallAppliances.png'),
+    image: require('../assets/warrior/Hood-10.jpg'),
 
-    description: 'Small appliances',
+    description: 'Hoodie',
     _id: 7,
   },
 
   {
-    image: require('../assets/images/categories/WomensClothing.png'),
+    image: require('../assets/warrior/Hood-1.jpg'),
 
-    description: 'Women clothing',
-    _id: 9,
-  },
-
-  {
-    image: require('../assets/images/categories/CookingAppliances.png'),
-
-    description: 'Cooking appliances',
+    description: 'Hoodie',
     _id: 10,
   },
   {
-    image: require('../assets/images/categories/HomeDecor.png'),
-    description: 'Home decor',
+    image: require('../assets/warrior/croptop-10.jpg'),
+    description: 'Croptop',
     _id: 11,
   },
 ];

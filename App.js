@@ -6,6 +6,7 @@ import {NativeBaseProvider} from 'native-base';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Splash from './components/SplashScreen';
+
 const Stack = createNativeStackNavigator();
 import {
   OnBoarding,
@@ -32,6 +33,7 @@ import {
   TrackOrder,
   WishList,
   Category,
+  CategoryFilter,
 } from './screens';
 import DrawerNav from './navigation/drawer/drawer1/DrawerNav1';
 import {ToastProvider} from 'react-native-toast-notifications';
@@ -211,6 +213,11 @@ export default function App() {
             <Stack.Screen
               name="Category"
               component={Category}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="CategoryFilter"
+              component={CategoryFilter}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

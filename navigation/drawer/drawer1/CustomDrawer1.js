@@ -49,11 +49,11 @@ const CustomDrawer1 = props => {
 
       {/* footer */}
       <View className="items-center relative top-[-5px] flex space-y-1">
-        <Text style={styles.customFont} className="text-[10px] text-black">
+        <Text style={styles.customFont} className="text-[10px] text-white">
           App Version 2.11.0
         </Text>
-        <Text className="text-[10px]  text-black" style={styles.customFont}>
-          &copy; {new Date().getFullYear()} SwiftMart Ltd
+        <Text className="text-[10px]  text-white" style={styles.customFont}>
+          &copy; {new Date().getFullYear()} FashionWarrior Ltd
         </Text>
       </View>
     </View>

@@ -1,37 +1,37 @@
 const onboarding_screens = [
   {
     id: 1,
-    backgroundImage: require("../assets/images/background_1.png"),
-    bannerImage: require("../assets//images/onboarding1.gif"),
-    title: "Discover Your Favorite Products",
+    backgroundImage: require('../assets/splash6.json'),
+    bannerImage: require('../assets/splash6.json'),
+    title: 'Discover Your Favorite Products',
     description:
-      "Experience exclusive benefits when you shop with us, including access to discounts, special deals, and rewards",
+      'Experience exclusive benefits when you shop with us, including access to discounts, special deals, and rewards',
   },
   {
     id: 2,
-    backgroundImage: require("../assets/images/background_1.png"),
-    bannerImage: require("../assets/images/onboarding2.gif"),
-    title: "Seamless Checkout",
+    backgroundImage: require('../assets/images/background_1.png'),
+    bannerImage: require('../assets/1.json'),
+    title: 'Seamless Checkout',
     description:
-      "Say goodbye to long queues and frustrating checkout processes. With us, you can enjoy a smooth and secure checkout experience.",
+      'Say goodbye to long queues and frustrating checkout processes. With us, you can enjoy a smooth and secure checkout experience.',
   },
   {
     id: 3,
-    backgroundImage: require("../assets/images/background_1.png"),
-    bannerImage: require("../assets/images/onboarding3.gif"),
-    title: "Fast and Reliable Delivery",
+    backgroundImage: require('../assets/images/background_1.png'),
+    bannerImage: require('../assets/3.json'),
+    title: 'Fast and Reliable Delivery',
     description:
-      "Get your orders delivered right to your doorstep, on time and in perfect condition. We pride ourselves on fast and reliable delivery.",
+      'Get your orders delivered right to your doorstep, on time and in perfect condition. We pride ourselves on fast and reliable delivery.',
   },
 ];
 const screens = {
-  main_layout: "MainLayout",
-  home: "Home",
-  search: "Search",
-  cart: "Cart",
-  favourite: "Favourite",
-  notification: "Notification",
-  wallet: "Wallet",
+  main_layout: 'MainLayout',
+  home: 'Home',
+  search: 'Search',
+  cart: 'Cart',
+  favourite: 'Favourite',
+  notification: 'Notification',
+  wallet: 'Wallet',
 };
 
 const bottom_tabs = [
@@ -60,19 +60,19 @@ const bottom_tabs = [
 const delivery_time = [
   {
     id: 1,
-    label: "10 Mins",
+    label: '10 Mins',
   },
   {
     id: 2,
-    label: "20 Mins",
+    label: '20 Mins',
   },
   {
     id: 3,
-    label: "30 Mins",
+    label: '30 Mins',
   },
   {
     id: 4,
-    label: "45 Mins",
+    label: '45 Mins',
   },
 ];
 
@@ -102,67 +102,67 @@ const ratings = [
 const tags = [
   {
     id: 1,
-    label: "Burger",
+    label: 'Burger',
   },
   {
     id: 2,
-    label: "Fast Food",
+    label: 'Fast Food',
   },
   {
     id: 3,
-    label: "Pizza",
+    label: 'Pizza',
   },
   {
     id: 4,
-    label: "Asian",
+    label: 'Asian',
   },
   {
     id: 5,
-    label: "Dessert",
+    label: 'Dessert',
   },
   {
     id: 6,
-    label: "Breakfast",
+    label: 'Breakfast',
   },
   {
     id: 7,
-    label: "Vegetable",
+    label: 'Vegetable',
   },
   {
     id: 8,
-    label: "Taccos",
+    label: 'Taccos',
   },
 ];
 
 const track_order_status = [
   {
     id: 1,
-    title: "Order Confirmed",
-    sub_title: "Your order has been received",
+    title: 'Order Confirmed',
+    sub_title: 'Your order has been received',
   },
   {
     id: 2,
-    title: "Order Prepared",
-    sub_title: "Your order has been prepared",
+    title: 'Order Prepared',
+    sub_title: 'Your order has been prepared',
   },
   {
     id: 3,
-    title: "Delivery in Progress",
-    sub_title: "Hang on! Your food is on the way",
+    title: 'Delivery in Progress',
+    sub_title: 'Hang on! Your food is on the way',
   },
   {
     id: 4,
-    title: "Delivered",
-    sub_title: "Enjoy your meal!",
+    title: 'Delivered',
+    sub_title: 'Enjoy your meal!',
   },
   {
     id: 5,
-    title: "Rate Us",
-    sub_title: "Help us improve our service",
+    title: 'Rate Us',
+    sub_title: 'Help us improve our service',
   },
 ];
 
-const GOOGLE_MAP_API_KEY = "";
+const GOOGLE_MAP_API_KEY = '';
 export default {
   onboarding_screens,
   screens,

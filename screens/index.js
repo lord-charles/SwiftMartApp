@@ -26,8 +26,10 @@ import Shipped from './Orders/Shipped';
 import TrackOrder from './Orders/TrackOrder';
 import WishList from './wishlist/WishList';
 import Category from './Category/Category';
+import CategoryFilter from './Category/CategoryFilter';
 
 export {
+  CategoryFilter,
   Category,
   TrackOrder,
   WishList,

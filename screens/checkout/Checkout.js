@@ -171,12 +171,12 @@ const Checkout = ({navigation}) => {
                       Shipping information
                     </Text>
                     <View className="flex flex-row justify-between items-center space-x-1">
-                      <Text className="text-red-500">Edit</Text>
+                      <Text className="text-blue-900">Edit</Text>
                       <FastImage
                         source={icons.right_chevron}
                         className="w-[15px] h-[15px]"
                         resizeMode="contain"
-                        tintColor="red"
+                        tintColor="#020a3b"
                         alt="image"
                       />
                     </View>
@@ -187,10 +187,10 @@ const Checkout = ({navigation}) => {
                       source={icons.warning}
                       className="w-[20px] h-[20px]"
                       resizeMode="contain"
-                      tintColor="red"
+                      tintColor="#020a3b"
                       alt="image"
                     />
-                    <Text className="text-red-600 font-bold text-[15px]">
+                    <Text className="text-blue-900 font-bold text-[15px]">
                       Please add shipping address here &gt;
                     </Text>
                   </View>
@@ -385,19 +385,17 @@ const Checkout = ({navigation}) => {
                         value={coupon}
                         keyboardType="numeric"
                         returnKeyType="done"
-                        borderColor="red.600"
+                        borderColor="blue.900"
                         className="text-black text-[14px]"
                       />
                     </View>
 
-                    <Button colorScheme={'red'} className="w-[20%]">
-                      Apply
-                    </Button>
+                    <Button className="w-[20%] bg-blue-900">Apply</Button>
                   </View>
                 </View>
 
                 <View className="flex flex-row justify-end bg-gray-100 p-2">
-                  <Text className="text-blue-500 underline">
+                  <Text className="text-blue-900 underline">
                     Shipping fee policy
                   </Text>
                 </View>
@@ -435,9 +433,9 @@ const Checkout = ({navigation}) => {
             <Divider className="mb-4" />
             <View className="flex flex-row justify-between items-center  mt-4.5">
               <View className="flex flex-row items-center space-x-1">
-                <Text className="text-red-500 text-[17px] font-bold">Ksh</Text>
+                <Text className="text-blue-900 text-[17px] font-bold">Ksh</Text>
                 <Text
-                  className="text-red-500 text-[17px] font-bold"
+                  className="text-blue-900 text-[17px] font-bold"
                   style={styles.customFont}>
                   {cartData.products?.length > 0
                     ? Math.ceil(cartData?.cartTotal).toLocaleString()
@@ -445,8 +443,7 @@ const Checkout = ({navigation}) => {
                 </Text>
               </View>
               <Button
-                colorScheme={'red'}
-                className="w-[110px]"
+                className="w-[110px] bg-blue-900"
                 onPress={() => {
                   handlePlaceOrder();
                 }}>

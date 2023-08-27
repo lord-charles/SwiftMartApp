@@ -22,15 +22,18 @@ const Account = ({navigation}) => {
             {/* part 1  */}
             <View
               className="py-4 m-2 rounded-md flex space-y-2"
-              style={{backgroundColor: '#e52e04'}}>
+              style={{backgroundColor: '#020a3b'}}>
               <ImageBackground
-                source={images.background_01}
+                source={images.background_03}
+                tintColor="#020a4b"
                 className="absolute w-full h-full"
               />
 
               {/* section 1  */}
               <View className="flex flex-row justify-between px-2 items-center">
-                <View className="flex flex-row items-center  space-x-4">
+                <TouchableOpacity
+                  className="flex flex-row items-center  space-x-4"
+                  onPress={() => navigation.navigate('SignIn')}>
                   <Image
                     source={icons.profilePlaceholder}
                     className="w-[55px] h-[55px]"
@@ -38,7 +41,7 @@ const Account = ({navigation}) => {
                     alt="image"
                   />
                   <Text className="text-white">Login/Register</Text>
-                </View>
+                </TouchableOpacity>
                 <TouchableOpacity>
                   <Image
                     source={icons.setting}
@@ -53,7 +56,7 @@ const Account = ({navigation}) => {
               {/* section 2  */}
               <View className="items-end">
                 <TouchableOpacity
-                  onPress={() => alert('SwiftMart Coin coming soon!')}
+                  onPress={() => alert('FashionWarrior Coin coming soon!')}
                   className="flex flex-row space-x-1 items-center bg-white w-[180px] rounded-l-full py-1 pl-0.5">
                   <Image
                     source={icons.coin}
@@ -61,8 +64,8 @@ const Account = ({navigation}) => {
                     resizeMode="contain"
                     alt="image"
                   />
-                  <Text className="text-[12px] text-red-500">
-                    SwiftMart Coin Reward
+                  <Text className="text-[12px] text-[#020a3b]">
+                    FashionWarrior Coin Reward
                   </Text>
                   <Image
                     source={icons.leftchev}
@@ -97,7 +100,7 @@ const Account = ({navigation}) => {
               <View className="items-center flex flex-row justify-between">
                 <Text className="text-black text-[17px]">My Orders</Text>
                 <Button
-                  colorScheme={'red'}
+                  className="bg-[#020a3b]"
                   onPress={() => navigation.navigate('MyOrders')}>
                   <Text className="text-white text-[13px]">View All</Text>
                 </Button>
@@ -109,7 +112,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.wallet}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -119,7 +122,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.shipping3}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -134,7 +137,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.shipped}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -144,7 +147,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.review}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -159,7 +162,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.refund}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -183,16 +186,16 @@ const Account = ({navigation}) => {
               {/* section 2  */}
               <View className="flex flex-row justify-between mt-[20px]">
                 <View className="items-center flex space-y-2">
-                  <Text className="text-red-500 text-[17px]">0</Text>
+                  <Text className="text-[#020a3b] text-[17px]">0</Text>
                   <Text className="text-black text-[13px]">Balance</Text>
                 </View>
                 <View className="items-center flex space-y-1">
-                  <Text className="text-red-500 text-[17px]">0</Text>
+                  <Text className="text-[#020a3b] text-[17px]">0</Text>
 
                   <Text className="text-black text-[13px]">Vouchers</Text>
                 </View>
                 <View className="items-center flex space-y-1">
-                  <Text className="text-red-500 text-[17px]">0</Text>
+                  <Text className="text-[#020a3b] text-[17px]">0</Text>
 
                   <Text className="text-black text-[13px]">Coins</Text>
                 </View>
@@ -212,7 +215,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.code}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -224,7 +227,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.invite}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -263,7 +266,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.addressbook}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -317,7 +320,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.setting2}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -329,7 +332,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.language}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -341,7 +344,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.currency}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -353,7 +356,7 @@ const Account = ({navigation}) => {
                   <Image
                     source={icons.notification}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: '#e52e04'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
@@ -385,7 +388,7 @@ const styles = StyleSheet.create({
     fontFamily: 'serif',
   },
   customColor: {
-    color: '#e52e04',
+    color: '#020a3b',
   },
 });
 
