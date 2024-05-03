@@ -2,28 +2,40 @@ import {Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {Image} from 'react-native';
 import axios from 'axios';
-import {base_url2} from '../../utils/baseUrl';
+import {base_url} from '../../utils/baseUrl';
 
-const CategoryCard = ({product}) => {
+const CategoryCard = ({product, navigation, setLoading}) => {
   const getCategoryId = async () => {
     const title1 = product.category.title;
     const title2 = product.items[0].title;
     const data = {title1, title2};
 
-    const res = await axios.get(`${base_url2}categories/get/by-titles`, {
-      title1: 'Warrior Featured',
-      title2: 'Hoodie',
-    });
-    console.log(res.data);
+    try {
+      setLoading(true);
+      const res = await axios.post(`${base_url}categories/get/by-titles`, data);
+      console.log(res.data);
+
+      navigation.navigate('CategoryFilter', {
+        id: res.data.category._id,
+        title: title2,
+      });
+    } catch (err) {
+      console.log(err.message);
+      if (err.message === 'Request failed with status code 404') {
+        navigation.navigate('CategoryFilter', {id: null, title: title2});
+      }
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <TouchableOpacity
-      className="items-center gap-y-3 p-1"
+      className="items-center gap-y-1 p-1"
       onPress={() => getCategoryId()}>
       <Image
         source={{uri: product.items[0].image}}
-        className="w-[100px] h-[100px]"
-        resizeMode="contain"
+        className="w-[80px] h-[80px]"
+        resizeMode="cover"
       />
       <Text className="text-black text-[10px]">{product.items[0].title}</Text>
     </TouchableOpacity>

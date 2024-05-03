@@ -32,16 +32,16 @@ import {
 import axios from 'axios';
 import {base_url} from '../../utils/baseUrl';
 import config from '../../utils/axiosconfig';
-import {Spinner, Toast} from 'native-base';
+import {Spinner, Toast, useToast} from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import {icons} from '../../constants';
 import {useFocusEffect} from '@react-navigation/native';
-
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
+import StatusBarComponent from '../../components/StatusBar';
 
 const Home = ({navigation}) => {
+  const toast = useToast();
+
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [specialProducts, setSpecialProducts] = useState([]);
   const [nonspecialProducts, setnonSpecialProducts] = useState([]);
@@ -54,8 +54,37 @@ const Home = ({navigation}) => {
   const [location, setLocation] = useState('N/A');
   const [city, setCity] = useState('');
   const [wishlistData, setWishlistData] = useState(null);
-
   const [refreshing, setRefreshing] = useState(false);
+  const [token, setToken] = useState('');
+  const [authorized, setAuthorized] = useState(false);
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+      setToken(res);
+      verifyToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
+
+  const verifyToken = async currentToken => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(currentToken).headers,
+      });
+
+      const res = await api.get('user/verifyToken/', config(currentToken));
+      if (res.data.message === 'authorized') {
+        setAuthorized(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setFastReflesh(fastReflesh + 1);
@@ -119,7 +148,16 @@ const Home = ({navigation}) => {
       setFeaturedProducts(res.data.data);
       // console.log(res.data);
     } catch (error) {
-      console.error(error);
+      console.log(error.message);
+      if (error.message === 'Network Error') {
+        toast.show(`${error.message}`, {
+          type: 'danger',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        });
+      }
     }
   };
 
@@ -153,7 +191,7 @@ const Home = ({navigation}) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${base_url}products?page=${limit}&limit=12&fields=description,title,price,images,-category,-brand,-colors`,
+        `${base_url}products?page=${limit}&limit=20&fields=description,title,price,images,-category,-brand,-colors`,
       );
       setPopularProducts(prevPopularProducts => [
         ...prevPopularProducts,
@@ -184,13 +222,15 @@ const Home = ({navigation}) => {
 
   const getWishlistProducts = async () => {
     try {
+      const currentToken = await AsyncStorage.getItem('token');
+
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(currentToken).headers,
       });
       const response = await api.get(
         `${base_url}user/wishlist/`,
-        config(token),
+        config(currentToken),
       );
       setWishlistData(response.data.wishlist.length);
     } catch (err) {
@@ -202,11 +242,12 @@ const Home = ({navigation}) => {
     try {
       requestLocationPermission();
       getInActiveFlashSaleProducts();
+      getToken();
       featuredData();
       specialData();
       nonspecialData();
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   }, [fastReflesh]);
 
@@ -219,15 +260,20 @@ const Home = ({navigation}) => {
     useCallback(() => {
       getWishlistProducts();
 
-      return () => {
-        // Clean up any subscriptions or resources if needed
-      };
+      return () => {};
     }, []),
   );
 
   return (
     <>
-      <Header navigation={navigation} wishlistData={wishlistData} />
+      <Header
+        navigation={navigation}
+        wishlistData={wishlistData}
+        authorized={authorized}
+        token={token}
+      />
+      <StatusBarComponent backgroundColor="white" />
+
       <View className="bg-white items-center flex flex-row space-x-1 px-3">
         <FastImage
           source={icons.location_pin}
@@ -258,36 +304,36 @@ const Home = ({navigation}) => {
           alignItems: 'center',
         }}
         keyExtractor={item => `${item._id}`}
-        // showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={['red', 'green', 'blue', 'orange']}
-            style={{backgroundColor: 'transparent'}}
-            tintColor="transparent" //iso
-          />
-        }
+        // // showsVerticalScrollIndicator={false}
+        // refreshControl={
+        //   <RefreshControl
+        //     refreshing={refreshing}
+        //     onRefresh={onRefresh}
+        //     colors={['red', 'green', 'blue', 'orange']}
+        //     style={{backgroundColor: 'transparent'}}
+        //     tintColor="transparent" //iso
+        //   />
+        // }
         ListHeaderComponent={
           <>
             <Slider />
             <MajorCategories />
-            {FlashSaleProducts.length > 0 ? (
+            {FlashSaleProducts?.length > 0 ? (
               <FlashSale products={FlashSaleProducts} navigation={navigation} />
             ) : (
               <HoLoadingFlash />
             )}
-            {featuredProducts.length > 0 ? (
+            {featuredProducts?.length > 0 ? (
               <Deals products={featuredProducts} navigation={navigation} />
             ) : (
               <HoLoadingcantmiss />
             )}
-            {specialProducts.length > 0 ? (
+            {specialProducts?.length > 0 ? (
               <Deals2 products={specialProducts} navigation={navigation} />
             ) : (
               <In24 />
             )}
-            {nonspecialProducts.length > 0 ? (
+            {nonspecialProducts?.length > 0 ? (
               <TopDeals products={nonspecialProducts} navigation={navigation} />
             ) : (
               <HoLoadingTopDeals />
@@ -307,6 +353,8 @@ const Home = ({navigation}) => {
                   product={item}
                   navigation={navigation}
                   getWishlistProducts={getWishlistProducts}
+                  token={token}
+                  authorized={authorized}
                 />
               </View>
             </>
@@ -315,13 +363,13 @@ const Home = ({navigation}) => {
         ListFooterComponent={
           <>
             {end ? (
-              <Text className="text-black  text-[14px] text-center">
+              <Text className="text-black  text-[14px] text-center pb-5">
                 No more products!
               </Text>
             ) : (
               <View>
                 {loading ? (
-                  <View className="flex flex-row space-x-2 items-center pb-1 justify-center">
+                  <View className="flex flex-row space-x-2 items-center  justify-center pb-5">
                     <Spinner color="warning.500" />
                     <Text className="text-black  text-[17px]">
                       loading more products....
@@ -336,7 +384,7 @@ const Home = ({navigation}) => {
           setLoading(true);
           setLimit(prevLimit => prevLimit + 1);
         }}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.5}
       />
     </>
   );

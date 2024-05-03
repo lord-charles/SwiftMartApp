@@ -13,10 +13,10 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import {base_url} from '../../utils/baseUrl';
+import {base_url, base_url2} from '../../utils/baseUrl';
 import Header from './Header';
 import LottieView from 'lottie-react-native';
-import {icons, images} from '../../constants';
+import {COLORS, icons, images} from '../../constants';
 import * as Progress from 'react-native-progress';
 import {Rating} from 'react-native-ratings';
 import {reviews} from '../../utils/data';
@@ -27,11 +27,10 @@ import config from '../../utils/axiosconfig';
 import {useFocusEffect} from '@react-navigation/native';
 import {Linking} from 'react-native';
 import FastImage from 'react-native-fast-image';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import StatusBarComponent from '../../components/StatusBar';
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
-
-const ProductDetails = ({navigation, route}) => {
+const ProductDetails = ({navigation, route, authorized}) => {
   const {id} = route.params;
   const toast = useToast();
   const [product, setProduct] = useState([]);
@@ -42,6 +41,20 @@ const ProductDetails = ({navigation, route}) => {
   const [data, setData] = useState([]);
   const [wishlistData, setWishlistData] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  const [token, setToken] = useState('');
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+      setToken(res);
+      verifyToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
 
   const width = Dimensions.get('window').width;
 
@@ -61,11 +74,39 @@ const ProductDetails = ({navigation, route}) => {
     }
   };
 
-  const getCart = async () => {
+  const verifyToken = async currentToken => {
     try {
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(currentToken).headers,
+      });
+
+      const res = await api.get('user/verifyToken/', config(currentToken));
+      if (res.data.message === 'authorized') {
+        getCart(currentToken);
+        getWishlistProducts(currentToken);
+        setIsAuthorized(true);
+      }
+    } catch (error) {
+      console.log(error);
+
+      if (error.message === 'Request failed with status code 404') {
+        toast.show('sign to enjoy personalized shopping!', {
+          type: 'warning',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        });
+      }
+    }
+  };
+
+  const getCart = async currentToken => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(currentToken).headers,
       });
 
       const res = await api.get('/cart');
@@ -76,15 +117,15 @@ const ProductDetails = ({navigation, route}) => {
     }
   };
 
-  const getWishlistProducts = async () => {
+  const getWishlistProducts = async currentToken => {
     try {
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(currentToken).headers,
       });
       const response = await api.get(
         `${base_url}user/wishlist/`,
-        config(token),
+        config(currentToken),
       );
       setWishlistData(response.data.wishlist.length);
     } catch (err) {
@@ -92,6 +133,16 @@ const ProductDetails = ({navigation, route}) => {
     }
   };
   const addToWishlist = async () => {
+    if (!isAuthorized) {
+      return toast.show('sign to access wishlist', {
+        type: 'warning',
+        placement: 'top',
+        duration: 2000,
+        offset: 30,
+        animationType: 'slide-in',
+      });
+    }
+
     try {
       const api = axios.create({
         baseURL: base_url,
@@ -141,7 +192,7 @@ const ProductDetails = ({navigation, route}) => {
   const handleMessage = platform => {
     setModalVisible(false);
     let url;
-    const phoneNumber = '+254740315545';
+    const phoneNumber = '+254708794747';
     switch (platform) {
       case 'messages':
         const message =
@@ -170,7 +221,7 @@ const ProductDetails = ({navigation, route}) => {
   Kind regards,
   [Your Name]`;
 
-        url = `mailto:mwanikicharles226@gmail.com?subject=${encodeURIComponent(
+        url = `mailto:mrsholei@gmail.com?subject=${encodeURIComponent(
           emailSubject,
         )}&body=${encodeURIComponent(emailBody)}`;
         break;
@@ -199,6 +250,7 @@ const ProductDetails = ({navigation, route}) => {
 
   useFocusEffect(
     useCallback(() => {
+      getToken();
       getProduct();
       getCart();
       getWishlistProducts();
@@ -209,8 +261,14 @@ const ProductDetails = ({navigation, route}) => {
   );
   return (
     <View className="bg-gray-100">
-      <Header navigation={navigation} data={data} wishlistData={wishlistData} />
-
+      <Header
+        navigation={navigation}
+        data={data}
+        wishlistData={wishlistData}
+        authorized={authorized}
+        token={token}
+      />
+      <StatusBarComponent backgroundColor={COLORS.lightGray2} />
       {/* filltermodal */}
       {showFilterModal && (
         <FilterModal
@@ -220,9 +278,9 @@ const ProductDetails = ({navigation, route}) => {
           isOrder={isOrder}
           getCart={getCart}
           navigation={navigation}
+          token={token}
         />
       )}
-
       {loading ? (
         <View className="bg-gray-100 h-full w-screen relative">
           <View
@@ -297,16 +355,7 @@ const ProductDetails = ({navigation, route}) => {
               <View className="flex flex-row items-center space-x-1">
                 <Text className="text-black">Category:</Text>
                 <Text className="text-[13px] text-black">
-                  {product.findProduct?.category[0].title}
-                </Text>
-              </View>
-
-              {/* brand  */}
-              <View className="flex flex-row items-center space-x-1">
-                <Text className="text-black">Brand:</Text>
-                <Text className="text-[13px] text-black">
-                  {product.findProduct?.brand[0].title} | similar product from{' '}
-                  {product.findProduct?.brand[0].title}
+                  {product.findProduct?.category[0]?.title}
                 </Text>
               </View>
 
@@ -424,7 +473,7 @@ const ProductDetails = ({navigation, route}) => {
                   style={{tintColor: '#020a3b'}}
                 />
                 <Text className="text-black text-[12px]">
-                  Free delivery for orders above Ksh 1999 in selected major
+                  Free delivery for orders above Ksh 50,000 in selected major
                   cities.
                 </Text>
               </View>
@@ -461,7 +510,7 @@ const ProductDetails = ({navigation, route}) => {
                   alt="image"
                 />
                 <Text className="text-black text-[12px]">
-                  Free delivery for orders above Ksh 1999 in selected major
+                  Free delivery for orders above Ksh 50,000 in selected major
                   cities.
                 </Text>
               </View>
@@ -638,7 +687,7 @@ const ProductDetails = ({navigation, route}) => {
               </TouchableOpacity>
               <TouchableOpacity
                 className="border-2 p-1 rounded-lg"
-                onPress={() => Linking.openURL(`tel:+${254740315545}`)}>
+                onPress={() => Linking.openURL(`tel:+${254708794747}`)}>
                 <Image
                   source={icons.call}
                   className="w-[25px] h-[25px]"

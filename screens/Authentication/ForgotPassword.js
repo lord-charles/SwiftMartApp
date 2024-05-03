@@ -97,11 +97,11 @@ const ForgotPassword = ({navigation}) => {
                 source={icons.warriorlogo}
                 className="w-[250px] h-[270px]"
                 resizeMode="stretch"
-                tintColor="red"
+                tintColor="#020a3b"
                 alt="logo"
               />
               <Text
-                className="relative top-[-9vh] right-2 font-sans font-bold text-[16px] text-red-500"
+                className="relative top-[-9vh] right-2 font-sans font-bold text-[16px] text-black"
                 style={styles.customFont}>
                 Forget Password!
               </Text>
@@ -117,7 +117,7 @@ const ForgotPassword = ({navigation}) => {
                   source={images.ForgotPassword}
                   resizeMode="contain"
                   alt="forgot passoword"
-                  resizeMode={FastImage.resizeMode.contain}
+                  resizeMode="contain"
                   className="w-[250px] h-[250px]"
                 />
               </View>
@@ -127,7 +127,7 @@ const ForgotPassword = ({navigation}) => {
                   <>
                     <FormControl.Label>
                       <Text
-                        className="text-red-600 font-bold"
+                        className="text-blue-900 font-bold"
                         style={styles.customFont}>
                         Email
                       </Text>
@@ -155,7 +155,7 @@ const ForgotPassword = ({navigation}) => {
                         onPress={handleShowLoginMethod}
                         className="relative  top-[3px]">
                         <Text
-                          className="text-red-600 italic text-[13px] mt-1 underline text-right"
+                          className="text-blue-900 italic text-[13px] mt-1 underline text-right"
                           style={styles.customFont}>
                           or, Phone number
                         </Text>
@@ -166,7 +166,7 @@ const ForgotPassword = ({navigation}) => {
                   <FormControl isRequired isInvalid={phoneNumberError !== ''}>
                     <FormControl.Label>
                       <Text
-                        className="text-red-600 font-bold"
+                        className="text-blue-900 font-bold"
                         style={styles.customFont}>
                         Phone Number
                       </Text>
@@ -177,7 +177,7 @@ const ForgotPassword = ({navigation}) => {
                       value={phoneNumber}
                       keyboardType="numeric"
                       returnKeyType="done"
-                      borderColor="red.600"
+                      borderColor="blue.900"
                       className="text-black text-[14px]"
                       InputLeftElement={
                         <View>
@@ -194,7 +194,7 @@ const ForgotPassword = ({navigation}) => {
                             renderFlagButton={() => (
                               <View className="flex flex-row items-center ml-[5px]">
                                 <FlagButton countryCode="KE" withEmoji />
-                                <Text className="text-red-600 font-semibold">
+                                <Text className="text-black font-semibold">
                                   +254
                                 </Text>
                               </View>
@@ -214,7 +214,7 @@ const ForgotPassword = ({navigation}) => {
                         onPress={handleShowLoginMethod}
                         className="relative left-[238px] top-[3px]">
                         <Text
-                          className="text-red-600 italic text-[13px] mt-1 underline text-right"
+                          className="text-blue-900 italic text-[13px] mt-1 underline text-right"
                           style={styles.customFont}>
                           or, use Email
                         </Text>
@@ -224,10 +224,10 @@ const ForgotPassword = ({navigation}) => {
                 )}
               </FormControl>
 
-              <TouchableOpacity>
+              <TouchableOpacity className="bg-blue-900">
                 <Button
                   mt={2}
-                  colorScheme="red"
+                  colorScheme="inherit"
                   disabled={false}
                   onPress={() => navigation.navigate('Otp')}>
                   <Text

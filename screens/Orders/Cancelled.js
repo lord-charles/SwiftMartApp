@@ -6,10 +6,7 @@ import {base_url} from '../../utils/baseUrl';
 import config from '../../utils/axiosconfig';
 import LottieView from 'lottie-react-native';
 import OrderCard from './OrderCard';
-import {Text} from 'react-native-svg';
-
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Cancelled = ({navigation}) => {
   const [disable, setDisable] = useState(false);
@@ -17,6 +14,7 @@ const Cancelled = ({navigation}) => {
   const [noData, setnoData] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getOrders2();
@@ -26,9 +24,10 @@ const Cancelled = ({navigation}) => {
     setDisable(true);
 
     try {
+      const tok = await AsyncStorage.getItem('token');
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(tok).headers,
       });
 
       const response = await api.post(
@@ -36,7 +35,7 @@ const Cancelled = ({navigation}) => {
         {
           status: 'Cancelled',
         },
-        config(token),
+        config(tok),
       );
       setData(response.data);
       setDisable(false);
@@ -50,9 +49,11 @@ const Cancelled = ({navigation}) => {
 
   const getOrders2 = async () => {
     try {
+      const tok = await AsyncStorage.getItem('token');
+
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(tok).headers,
       });
 
       const response = await api.post(
@@ -60,7 +61,7 @@ const Cancelled = ({navigation}) => {
         {
           status: 'Cancelled',
         },
-        config(token),
+        config(tok),
       );
       setData(response.data);
       setRefreshing(false);

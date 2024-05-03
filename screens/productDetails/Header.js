@@ -4,7 +4,7 @@ import {icons} from '../../constants';
 
 import FastImage from 'react-native-fast-image';
 
-const Header = ({navigation, data, wishlistData}) => {
+const Header = ({navigation, data, wishlistData, authorized, token}) => {
   return (
     <View className="h-[55px] bg-gray-100 flex flex-row items-center justify-between px-2">
       <View className="flex flex-row space-x-3 items-center">
@@ -33,7 +33,7 @@ const Header = ({navigation, data, wishlistData}) => {
 
         <TouchableOpacity
           className=" bg-white  p-2.5 rounded-full"
-          onPress={() => navigation.navigate('WishList')}>
+          onPress={() => navigation.navigate('WishList', {authorized, token})}>
           <FastImage
             source={icons.heart}
             className="w-[20px] h-[20px]"
@@ -49,7 +49,12 @@ const Header = ({navigation, data, wishlistData}) => {
         </TouchableOpacity>
         <TouchableOpacity
           className="relative bg-white  p-2.5 rounded-full"
-          onPress={() => navigation.navigate('Cart')}>
+          onPress={() =>
+            navigation.navigate('Cart', {
+              authorized,
+              token,
+            })
+          }>
           <FastImage
             source={icons.cart}
             className="w-[20px] h-[20px]"

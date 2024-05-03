@@ -111,8 +111,14 @@ const telegram = require('../assets/icons/telegram.png');
 const orders_outline = require('../assets/icons/orders_outline.png');
 const warriorlogo = require('../assets/warrior/warriorlogo.png');
 const warriorlogo2 = require('../assets/warrior/Warrior_LOGO.png');
+const useravatar = require('../assets/icons/avatar.png');
+const pluscircled = require('../assets/icons/pluscircled.png');
+const submit = require('../assets/icons/submit.png');
 
 export default {
+  submit,
+  pluscircled,
+  useravatar,
   warriorlogo2,
   warriorlogo,
   orders_outline,

@@ -6,10 +6,7 @@ import {base_url} from '../../utils/baseUrl';
 import config from '../../utils/axiosconfig';
 import LottieView from 'lottie-react-native';
 import OrderCard from './OrderCard';
-
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Derivered = ({navigation}) => {
   const [disable, setDisable] = useState(false);
   const [data, setData] = useState([]);
@@ -23,11 +20,12 @@ const Derivered = ({navigation}) => {
 
   const getOrders = async () => {
     setDisable(true);
+    const tok = await AsyncStorage.getItem('token');
 
     try {
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(tok).headers,
       });
 
       const response = await api.post(
@@ -35,7 +33,7 @@ const Derivered = ({navigation}) => {
         {
           status: 'Delivered',
         },
-        config(token),
+        config(tok),
       );
       setData(response.data);
       setDisable(false);
@@ -49,9 +47,11 @@ const Derivered = ({navigation}) => {
 
   const getOrders2 = async () => {
     try {
+      const tok = await AsyncStorage.getItem('token');
+
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(tok).headers,
       });
 
       const response = await api.post(
@@ -59,7 +59,7 @@ const Derivered = ({navigation}) => {
         {
           status: 'Delivered',
         },
-        config(token),
+        config(tok),
       );
       setData(response.data);
       setRefreshing(false);

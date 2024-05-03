@@ -1,5 +1,12 @@
 import {icons} from '../../constants';
 import BottomTabs from '../../navigation/Tabs';
+import {
+  About,
+  AccountSettings,
+  Coupons,
+  MyOrders,
+  WishList,
+} from '../../screens';
 
 export const ScreensArray = [
   {
@@ -11,31 +18,31 @@ export const ScreensArray = [
     notification: 0,
   },
 
-  {
-    route: 'Wallet',
-    icon: icons.wallet,
-    component: BottomTabs,
-    notification: 9,
-  },
-  {
-    route: 'Notifications',
-    icon: icons.notification,
-    component: BottomTabs,
-    notification: 9,
-  },
+  // {
+  //   route: 'Wallet',
+  //   icon: icons.wallet,
+  //   component: BottomTabs,
+  //   notification: 9,
+  // },
+  // {
+  //   route: 'Notifications',
+  //   icon: icons.notification,
+  //   component: BottomTabs,
+  //   notification: 9,
+  // },
   {
     route: 'Favourite',
     label: 'My Calendar',
     type: icons.call,
     icon: icons.favourite,
-    component: BottomTabs,
+    component: WishList,
     notification: 4,
   },
   {
     route: 'Orders',
     label: 'myorders',
     icon: icons.shipping3,
-    component: BottomTabs,
+    component: MyOrders,
     type: icons.call,
   },
   {
@@ -43,7 +50,7 @@ export const ScreensArray = [
     label: 'Coupons',
     type: icons.call,
     icon: icons.refund,
-    component: BottomTabs,
+    component: Coupons,
     notification: 0,
   },
   {
@@ -51,50 +58,42 @@ export const ScreensArray = [
     label: 'Settings',
     type: icons.call,
     icon: icons.setting2,
-    component: BottomTabs,
+    component: AccountSettings,
     notification: 2,
   },
-  {
-    route: 'Track Your Order',
-    label: 'Settings',
-    type: icons.call,
-    icon: icons.location1,
-    component: BottomTabs,
-    notification: 0,
-  },
-  {
-    route: 'Invite Friend',
-    label: 'invite',
-    type: icons.call,
+  // {
+  //   route: 'Track Your Order',
+  //   label: 'Settings',
+  //   type: icons.call,
+  //   icon: icons.location1,
+  //   component: MyOrders,
+  //   notification: 0,
+  // },
+  // {
+  //   route: 'Invite Friend',
+  //   label: 'invite',
+  //   type: icons.call,
 
-    icon: icons.invite,
-    component: BottomTabs,
-    notification: 0,
-  },
+  //   icon: icons.invite,
+  //   component: BottomTabs,
+  //   notification: 0,
+  // },
   {
     route: 'About Us',
     label: 'about',
     type: icons.officialuser,
     icon: icons.SwiftMartlogo1,
-    component: BottomTabs,
+    component: About,
     notification: 0,
   },
-  {
-    route: 'Help Center',
-    label: 'Settings',
-    type: icons.user,
-    icon: icons.customerservice,
-    component: BottomTabs,
-    notification: 0,
-  },
-  {
-    route: 'Logout',
-    label: 'Logout',
-    type: icons.user,
-    icon: icons.logout,
-    component: BottomTabs,
-    notification: 0,
-  },
+  // {
+  //   route: 'Help Center',
+  //   label: 'Settings',
+  //   type: icons.user,
+  //   icon: icons.customerservice,
+  //   component: BottomTabs,
+  //   notification: 0,
+  // },
 ];
 
 export const ProjectsArray = [

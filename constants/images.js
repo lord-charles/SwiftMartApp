@@ -7,7 +7,7 @@ const facebook = require('../assets/images/facebook_logo.png');
 const ForgotPassword = require('../assets/images/Forgotpassword.gif');
 const resetpassword = require('../assets/images/Resetpassword.gif');
 const enterotp = require('../assets/images/EnterOTP.gif');
-
+const boss2 = require('../assets/warrior/boss2.jpeg');
 export default {
   background_01,
   background_02,
@@ -18,4 +18,5 @@ export default {
   ForgotPassword,
   resetpassword,
   enterotp,
+  boss2,
 };

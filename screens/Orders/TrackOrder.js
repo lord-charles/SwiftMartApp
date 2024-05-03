@@ -54,9 +54,10 @@ const TrackOrder = ({route, navigation}) => {
         : res.data.orderStatus === 'Dispatched'
         ? setStep(3)
         : null;
-      setDisable(false);
     } catch (err) {
       console.log(err);
+    } finally {
+      setDisable(false);
     }
   };
 
@@ -236,7 +237,8 @@ const TrackOrder = ({route, navigation}) => {
                   Delivery Address
                 </Text>
                 <Text className="text-[13px] text-black">
-                  {data.orderBy?.address}
+                  {data.orderBy?.address?.County},{' '}
+                  {data.orderBy?.address?.message}
                 </Text>
               </View>
             </View>

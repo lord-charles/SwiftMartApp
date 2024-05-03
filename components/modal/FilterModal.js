@@ -11,14 +11,12 @@ import {
 import {icons} from '../../constants';
 import FastImage from 'react-native-fast-image';
 import ColorComponent from '../Colors';
-import {FlatList, Input} from 'native-base';
+import {FlatList, Input, TextArea} from 'native-base';
 import {useToast} from 'react-native-toast-notifications';
 import axios from 'axios';
 import {base_url} from '../../utils/baseUrl';
 import config from '../../utils/axiosconfig';
 import LottieView from 'lottie-react-native';
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
 
 const FilterModal = ({
   isVisible,
@@ -27,18 +25,26 @@ const FilterModal = ({
   getCart,
   isOrder,
   navigation,
+  token,
 }) => {
   const {height} = Dimensions.get('window');
   const [selectedColor, setSelectedColor] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(isVisible);
   const [value, setValue] = useState(1);
   const [loading, setLoading] = useState(false);
+
   const toast = useToast();
+  const [message, setMessage] = useState('');
+
+  const handleMessageChange = text => {
+    setMessage(text);
+  };
 
   const cartData = {
     productId: product._id,
     quantity: value,
-    color: selectedColor,
+    color: 'null',
+    message,
   };
 
   const addToCart = async () => {
@@ -50,10 +56,9 @@ const FilterModal = ({
       setLoading(true);
 
       const res = await api.post('/cart', cartData);
-      console.log(res);
-      if (res.data.message == 'Item added to cart successfully') {
+      if (res.data.message === 'Item added to cart successfully') {
         setLoading(false);
-        toast.show(`${value} ${selectedColor} ${product.title} added to cart`, {
+        toast.show(`${value} ${product.title} added to cart`, {
           type: 'success',
           placement: 'top',
           duration: 2000,
@@ -65,9 +70,9 @@ const FilterModal = ({
           onClose();
         }, 2000);
       }
-      if (res.data.err == 'Not Authorized token expired, Please Login again') {
+      if (res.data.err === 'Not Authorized token expired, Please Login again') {
         setLoading(false);
-        toast.show(`Please login to continue`, {
+        toast.show('Please login to continue', {
           type: 'danger',
           placement: 'top',
           duration: 3000,
@@ -76,9 +81,9 @@ const FilterModal = ({
         });
       }
     } catch (err) {
-      if (err.response.data.message == 'Requested quantity not available') {
+      if (err.response.data.message === 'Requested quantity not available') {
         setLoading(false);
-        toast.show(`Inventory shortage!`, {
+        toast.show('Inventory shortage!', {
           type: 'danger',
           placement: 'top',
           duration: 2000,
@@ -105,43 +110,43 @@ const FilterModal = ({
         },
         config(token),
       );
-      if (res.status === 200) {
+      if (res.data.err === 'Not Authorized token expired, Please Login again') {
         return (
-          toast.show('Sucess', {
-            type: 'success',
-            placement: 'top',
-            duration: 2000,
-            offset: 30,
-            animationType: 'slide-in',
-          }),
-          onClose(),
           setLoading(false),
-          navigation.navigate('Checkout')
+          toast.show('Please login to continue', {
+            type: 'danger',
+            placement: 'top',
+            duration: 3000,
+            offset: 30,
+            animationType: 'zoom-in',
+          }),
+          navigation.navigate('SignIn')
         );
-      } else {
-        toast.show('Something went wrong, retry', {
-          type: 'danger',
-          placement: 'top',
-          duration: 2000,
-          offset: 30,
-          animationType: 'slide-in',
-        });
       }
+
+      toast.show('Sucess', {
+        type: 'success',
+        placement: 'top',
+        duration: 2000,
+        offset: 30,
+        animationType: 'slide-in',
+      }),
+        onClose(),
+        setLoading(false),
+        navigation.navigate('Checkout');
     } catch (error) {
       setLoading(false);
+      toast.show('Something went wrong, retry', {
+        type: 'danger',
+        placement: 'top',
+        duration: 2000,
+        offset: 30,
+        animationType: 'slide-in',
+      });
     }
   };
 
   const handleCartData = async () => {
-    if (selectedColor === null) {
-      return toast.show('Please select the correct color', {
-        type: 'warning',
-        placement: 'top',
-        duration: 2000,
-        offset: 30,
-        animationType: 'zoom-in',
-      });
-    }
     isOrder ? orderNow() : addToCart();
   };
 
@@ -201,7 +206,7 @@ const FilterModal = ({
           {/* loading animation  */}
           {loading ? (
             <View
-              className={`absolute top-[28%] left-[37%]
+              className={`absolute top-[38%] left-[38%]
           `}>
               <LottieView
                 source={require('../../assets/loader1.json')}
@@ -250,8 +255,8 @@ const FilterModal = ({
               </View>
 
               {/* colors  */}
-              <View className="mt-[30px]">
-                <Text className="text-black text-[17px]">Colors</Text>
+              <View className="mt-[15px]">
+                <Text className="text-white text-[17px]">Colors</Text>
                 <View className="mt-[10px]">
                   <FlatList
                     data={product.colors}
@@ -276,47 +281,86 @@ const FilterModal = ({
                 </View>
               </View>
 
+              <View className="justify-center items-center px-5">
+                <View className="w-full">
+                  <Text className="font-bold text-black text-start py-1 text-[18px]">
+                    Product specifications{' '}
+                  </Text>
+                  <TextArea
+                    shadow={2}
+                    h={20}
+                    placeholder="Please describe your preferred product specifications or any specific features you desire."
+                    value={message}
+                    onChangeText={handleMessageChange}
+                    _light={{
+                      placeholderTextColor: 'trueGray.500',
+                      bg: 'coolGray.100',
+                      _hover: {
+                        bg: 'coolGray.200',
+                      },
+                      _focus: {
+                        bg: 'coolGray.200:alpha.70',
+                      },
+                    }}
+                    _dark={{
+                      bg: 'coolGray.800',
+                      _hover: {
+                        bg: 'coolGray.900',
+                      },
+                      _focus: {
+                        bg: 'coolGray.900:alpha.70',
+                      },
+                    }}
+                  />
+                </View>
+              </View>
+
               {/* quantity table */}
-              <View className="mt-[40px] items-end">
-                <Input
-                  w={{
-                    base: '30%',
-                    md: '25%',
-                  }}
-                  h={{
-                    base: '35%',
-                    md: '25%',
-                  }}
-                  className="text-black text-[14px]"
-                  value={value.toString()} // convert the value to a string before passing it to the Input component
-                  colorScheme={'gray'}
-                  InputLeftElement={
-                    <TouchableOpacity
-                      className=" h-full w-[37px] items-center justify-center border-r border-gray-300"
-                      onPress={handleMinusClick} // call the handleMinusClick function when the minus button is clicked
-                    >
-                      <FastImage
-                        source={icons.minus}
-                        resizeMode="contain"
-                        className="w-[15px] h-[15px]"
-                        tintColor={'black'}
-                      />
-                    </TouchableOpacity>
-                  }
-                  InputRightElement={
-                    <TouchableOpacity
-                      className="h-full w-[37px] items-center justify-center border-l border-gray-300"
-                      onPress={handlePlusClick} // call the handlePlusClick function when the plus button is clicked
-                    >
-                      <FastImage
-                        source={icons.plus}
-                        resizeMode="contain"
-                        className="w-[15px] h-[15px]"
-                        tintColor={'black'}
-                      />
-                    </TouchableOpacity>
-                  }
-                />
+              <View className="mt-[10px] px-5">
+                <View>
+                  <Text className="font-bold text-black text-start py-1 text-[18px]">
+                    Quantity
+                  </Text>
+                  <Input
+                    w={{
+                      base: '37%',
+                      md: '25%',
+                    }}
+                    h={{
+                      base: '35%',
+                      md: '25%',
+                    }}
+                    className="text-black text-[14px]"
+                    value={value.toString()} // convert the value to a string before passing it to the Input component
+                    colorScheme={'gray'}
+                    InputLeftElement={
+                      <TouchableOpacity
+                        className=" h-full w-[37px] items-center justify-center border-r border-gray-300"
+                        onPress={handleMinusClick} // call the handleMinusClick function when the minus button is clicked
+                      >
+                        <FastImage
+                          source={icons.minus}
+                          resizeMode="contain"
+                          className="w-[15px] h-[15px]"
+                          tintColor={'black'}
+                        />
+                      </TouchableOpacity>
+                    }
+                    InputRightElement={
+                      <TouchableOpacity
+                        className="h-full w-[37px] items-center justify-center border-l border-gray-300"
+                        onPress={handlePlusClick} // call the handlePlusClick function when the plus button is clicked
+                      >
+                        <FastImage
+                          source={icons.plus}
+                          resizeMode="contain"
+                          className="w-[15px] h-[15px]"
+                          tintColor={'black'}
+                        />
+                      </TouchableOpacity>
+                    }
+                  />
+                </View>
               </View>
             </View>
             {product.quantity > 0 ? (

@@ -1,38 +1,23 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ImageBackground,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {icons, images} from '../../constants';
 import {VStack, Box, Center, FormControl, Input, Button} from 'native-base';
 import CountryPicker, {FlagButton} from 'react-native-country-picker-modal';
 import FastImage from 'react-native-fast-image';
+import Toast from 'react-native-toast-message';
+import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {base_url} from '../../utils/baseUrl';
+import axios from 'axios';
+import StatusBarComponent from '../../components/StatusBar';
 
 const SignIn = ({navigation}) => {
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isEmail, setisEmail] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [countryCode, setCountryCode] = useState('US'); // Set the default country code
-
-  const [emailError, setEmailError] = useState('');
-
-  const handleEmailChange = value => {
-    setEmail(value);
-    if (value.trim() === '') {
-      setEmailError('Email is required');
-    } else if (!/\S+@\S+\.\S+/.test(value)) {
-      setEmailError('Email is invalid');
-    } else {
-      setEmailError('');
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
   const onSelect = country => {
     setCountryCode(country.cca2);
@@ -56,20 +41,90 @@ const SignIn = ({navigation}) => {
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const handleShowLoginMethod = () => {
-    setisEmail(!isEmail);
+
+  // Storing token
+  const storeToken = async token => {
+    try {
+      await AsyncStorage.setItem('token', token);
+      console.log('Token stored successfully.');
+    } catch (error) {
+      console.log('Error storing token:', error);
+    }
   };
 
-  const handleSignIn = () => {
-    // Perform sign in action
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log(token);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
   };
 
-  const isEnableSignIn = () => {
-    return (
-      ((email !== '' && emailError === '') ||
-        (phoneNumber !== '' && phoneNumberError === '')) && // check if either email or phone number is not empty and does not have errors
-      password !== '' // check if password is not empty
-    );
+  const loginUser = async () => {
+    setLoading(true);
+    if (phoneNumber !== '' && password !== '' && phoneNumberError === '') {
+      try {
+        const res = await axios.post(`${base_url}user/login`, {
+          password,
+          mobile: phoneNumber,
+        });
+        console.log(res.data);
+
+        if (
+          res.data.message ===
+          'Operation `users.findOne()` buffering timed out after 10000ms'
+        ) {
+          return (
+            Toast.show({
+              type: 'error',
+              text1: 'Error connecting to database!',
+              text2: 'Please enter the correct login credentials.',
+            }),
+            setLoading(false)
+          );
+        }
+
+        if (res.status === 200) {
+          const {token} = res.data;
+          storeToken(token);
+          getToken();
+          setLoading(false);
+          Toast.show({
+            type: 'info',
+            text1: 'Welcome Back!',
+            text2: 'You have successfully logged in.',
+          });
+          navigation.navigate('DrawerNav');
+        }
+      } catch (err) {
+        console.log(err.message);
+        if (err.response.data === 'Wrong mobile!') {
+          Toast.show({
+            type: 'info',
+            text1: 'Incorrect Phone Number',
+            text2: 'Please enter the correct login credentials.',
+          });
+          setLoading(false);
+        }
+        if (err.response.data === 'Wrong password!') {
+          Toast.show({
+            type: 'info',
+            text1: 'Incorrect Password',
+            text2: 'Please enter the correct login credentials.',
+          });
+          setLoading(false);
+        }
+      }
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill all fields correctly',
+      });
+      setLoading(false);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -80,6 +135,8 @@ const SignIn = ({navigation}) => {
 
   return (
     <View style={{backgroundColor: '#FFFFFF', height: '100%'}}>
+      <StatusBarComponent backgroundColor="white" />
+
       <View>
         <Center style={{backgroundColor: '#FFFFFF'}} className="relative">
           <View className="absolute top-[40px] ">
@@ -103,110 +160,58 @@ const SignIn = ({navigation}) => {
             borderRadius="2xl"
             className="h-[60vh] w-[90%] bg-white relative top-[25vh] shadow-lg shadow-slate-500">
             <VStack space={3} marginTop={5} marginX={7}>
-              <FormControl isRequired isInvalid={emailError !== ''}>
-                {isEmail ? (
-                  <>
-                    <FormControl.Label>
-                      <Text
-                        className="text-black font-bold"
-                        style={styles.customFont}>
-                        Email
-                      </Text>
-                    </FormControl.Label>
-                    <Input
-                      placeholder={'Enter your email'}
-                      onChangeText={handleEmailChange}
-                      value={email}
-                      autoCapitalize="none"
-                      keyboardType="email-address"
-                      returnKeyType="next"
-                      className="text-black text-[14px]"
-                      borderColor="red.600"
-                    />
-                    <View className="flex flex-row items-center justify-between ">
-                      <View>
-                        {emailError !== '' && (
-                          <FormControl.ErrorMessage>
-                            <Text className="">{emailError}</Text>
-                          </FormControl.ErrorMessage>
+              <FormControl isRequired isInvalid={phoneNumberError !== ''}>
+                <FormControl.Label>
+                  <Text
+                    className="text-black font-bold"
+                    style={styles.customFont}>
+                    Phone Number
+                  </Text>
+                </FormControl.Label>
+                <Input
+                  placeholder="Enter your phone number"
+                  onChangeText={handlePhoneNumberChange}
+                  value={phoneNumber}
+                  keyboardType="numeric"
+                  returnKeyType="done"
+                  borderColor="blue.900"
+                  className="text-black text-[14px]"
+                  InputLeftElement={
+                    <View>
+                      <CountryPicker
+                        countryCode={countryCode}
+                        withFilter
+                        withFlag
+                        withCountryNameButton={false} // Set withCountryNameButton to false
+                        withAlphaFilter
+                        withCallingCode={true}
+                        withEmoji
+                        onSelect={onSelect}
+                        visible={false}
+                        renderFlagButton={() => (
+                          <View className="flex flex-row items-center ml-[5px]">
+                            <FlagButton countryCode="KE" withEmoji />
+                            <Text className="text-black font-semibold">
+                              +254
+                            </Text>
+                          </View>
                         )}
-                      </View>
-
-                      <TouchableOpacity
-                        onPress={handleShowLoginMethod}
-                        className="relative  top-[3px]">
-                        <Text
-                          className="text-black italic text-[13px] mt-1 underline text-right"
-                          style={styles.customFont}>
-                          or, Phone number
-                        </Text>
-                      </TouchableOpacity>
+                      />
                     </View>
-                  </>
-                ) : (
-                  <FormControl isRequired isInvalid={phoneNumberError !== ''}>
-                    <FormControl.Label>
-                      <Text
-                        className="text-black font-bold"
-                        style={styles.customFont}>
-                        Phone Number
-                      </Text>
-                    </FormControl.Label>
-                    <Input
-                      placeholder="Enter your phone number"
-                      onChangeText={handlePhoneNumberChange}
-                      value={phoneNumber}
-                      keyboardType="numeric"
-                      returnKeyType="done"
-                      borderColor="blue.900"
-                      className="text-black text-[14px]"
-                      InputLeftElement={
-                        <View>
-                          <CountryPicker
-                            countryCode={countryCode}
-                            withFilter
-                            withFlag
-                            withCountryNameButton={false} // Set withCountryNameButton to false
-                            withAlphaFilter
-                            withCallingCode={true}
-                            withEmoji
-                            onSelect={onSelect}
-                            visible={false}
-                            renderFlagButton={() => (
-                              <View className="flex flex-row items-center ml-[5px]">
-                                <FlagButton countryCode="KE" withEmoji />
-                                <Text className="text-black font-semibold">
-                                  +254
-                                </Text>
-                              </View>
-                            )}
-                          />
-                        </View>
-                      }
-                    />
+                  }
+                />
 
-                    <View className="flex flex-row items-center justify-between ">
-                      <View>
-                        {phoneNumberError !== '' && (
-                          <FormControl.ErrorMessage>
-                            {phoneNumberError}
-                          </FormControl.ErrorMessage>
-                        )}
-                      </View>
-
-                      <TouchableOpacity
-                        onPress={handleShowLoginMethod}
-                        className="relative left-[238px] top-[3px]">
-                        <Text
-                          className="text-black italic text-[13px] mt-1 underline text-right"
-                          style={styles.customFont}>
-                          or, use Email
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </FormControl>
-                )}
+                <View className="flex flex-row items-center justify-between ">
+                  <View>
+                    {phoneNumberError !== '' && (
+                      <FormControl.ErrorMessage>
+                        {phoneNumberError}
+                      </FormControl.ErrorMessage>
+                    )}
+                  </View>
+                </View>
               </FormControl>
+
               <FormControl isRequired>
                 <FormControl.Label>
                   <Text
@@ -248,7 +253,7 @@ const SignIn = ({navigation}) => {
                     </View>
                   }
                 />
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => navigation.navigate('ForgotPassword')}
                   className="relative  top-[3px]">
                   <Text
@@ -256,19 +261,33 @@ const SignIn = ({navigation}) => {
                     style={styles.customFont}>
                     Forgot Password?
                   </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </FormControl>
-              <TouchableOpacity>
+              <TouchableOpacity className="mt-2">
                 <Button
                   mt={2}
                   className="bg-blue-900 text-white font-bold"
-                  onPress={() => navigation.navigate('DrawerNav')}
+                  onPress={() => loginUser()}
                   style={styles.customFont}>
-                  <Text
-                    style={styles.customFont}
-                    className="text-white font-bold text-[16px]">
-                    Log in
-                  </Text>
+                  <View>
+                    {loading ? (
+                      <View className="bg-red-600 h-[20px] relative left-[-50px] top-[-14px] ">
+                        <LottieView
+                          source={require('../../assets/Evabamar.json')}
+                          autoPlay
+                          loop
+                          width={100}
+                          height={50}
+                        />
+                      </View>
+                    ) : (
+                      <Text
+                        style={styles.customFont}
+                        className="text-white font-bold text-[16px]">
+                        Log in
+                      </Text>
+                    )}
+                  </View>
                 </Button>
               </TouchableOpacity>
 

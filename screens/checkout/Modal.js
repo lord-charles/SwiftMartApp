@@ -20,9 +20,6 @@ import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CountryPicker, {FlagButton} from 'react-native-country-picker-modal';
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
-
 const PlaceOrderModal = ({
   setModalVisible,
   modalVisible,
@@ -37,7 +34,17 @@ const PlaceOrderModal = ({
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [countryCode, setCountryCode] = useState('US');
 
-  console.log(friendPay);
+  const [token, setToken] = useState('');
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+      setToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
 
   const onSelect = country => {
     setCountryCode(country.cca2);
@@ -124,6 +131,7 @@ const PlaceOrderModal = ({
   //animation
   const modalAnimatedValue = useRef(new Animated.Value(0)).current;
   useEffect(() => {
+    getToken();
     if (modalVisible) {
       Animated.timing(modalAnimatedValue, {
         toValue: 1,

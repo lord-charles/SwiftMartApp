@@ -6,22 +6,54 @@ import config from '../../utils/axiosconfig';
 import {useToast} from 'react-native-toast-notifications';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import FastImage from 'react-native-fast-image';
-import {icons} from '../../constants';
-import {AlertDialog, Button, Divider, Input} from 'native-base';
 import {useFocusEffect} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import Header from '../checkout/Header';
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
+import {UnauthorizedModal} from '../../components';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const WishList = ({navigation}) => {
   const [loading, setLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const onClose = () => setIsOpen(false);
-  const cancelRef = useRef(null);
   const toast = useToast();
   const [myWishList, setMyWishList] = useState([]);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [token, setToken] = useState('');
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+      setToken(res);
+      verifyToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
+  const verifyToken = async currentToken => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(currentToken).headers,
+      });
+
+      const res = await api.get('user/verifyToken/', config(currentToken));
+      if (res.data.message === 'authorized') {
+        getWishlistProducts(currentToken);
+      }
+    } catch (error) {
+      if (error.message === 'Request failed with status code 404') {
+        toast.show('sign to access Cart', {
+          type: 'warning',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        }),
+          setShowFilterModal(true);
+      }
+    }
+  };
 
   const re_moveToWishlist = async (prodId, title) => {
     try {
@@ -66,25 +98,28 @@ const WishList = ({navigation}) => {
     }
   };
 
-  const getWishlistProducts = async () => {
+  const getWishlistProducts = async currentToken => {
+    setLoading(true);
     try {
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(currentToken).headers,
       });
       const response = await api.get(
         `${base_url}user/wishlist/`,
-        config(token),
+        config(currentToken),
       );
       setMyWishList(response.data.wishlist);
+      setLoading(false);
     } catch (err) {
       console.log(err);
+      setLoading(false);
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      getWishlistProducts();
+      getToken();
       return () => {
         // Clean up any subscriptions or resources if needed
       };
@@ -163,85 +198,49 @@ const WishList = ({navigation}) => {
 
   return (
     <View className="bg-gray-100">
-      <AlertDialog
-        leastDestructiveRef={cancelRef}
-        isOpen={isOpen}
-        onClose={onClose}>
-        <AlertDialog.Content>
-          <AlertDialog.CloseButton />
-          <AlertDialog.Header>Clear cart</AlertDialog.Header>
-          <AlertDialog.Body>
-            You are about to clear your cart. This action is irreversible and
-            will remove all items from your cart. Please take a moment to review
-            your cart contents before proceeding.
-          </AlertDialog.Body>
-          <AlertDialog.Footer>
-            <Button.Group space={2}>
-              <Button
-                variant="unstyled"
-                colorScheme="coolGray"
-                onPress={onClose}
-                ref={cancelRef}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="danger"
-                onPress={() => {
-                  clearCart();
-                  setTimeout(() => {
-                    onClose();
-                  }, 1000);
-                }}>
-                Proceed
-              </Button>
-            </Button.Group>
-          </AlertDialog.Footer>
-        </AlertDialog.Content>
-      </AlertDialog>
-
       <Header navigation={navigation} title="Wishlist" />
 
-      {loading ? (
-        <View className="h-[100px] absolute top-[53%] left-[33%] z-[999]">
-          <LottieView
-            source={require('../../assets/dots.json')}
-            autoPlay
-            loop
-            width={120}
-            height={120}
-          />
-        </View>
-      ) : null}
-
-      {myWishList?.length > 0 ? (
-        <View className="z-[40] h-full">
-          <SwipeListView
-            data={myWishList}
-            renderItem={renderItem}
-            renderHiddenItem={renderHiddenItem}
-            rightOpenValue={-100}
-            leftOpenValue={100}
-            disableRightSwipe={false}
-            onSwipeValueChange={onSwipeValueChange}
-          />
-        </View>
-      ) : (
-        <View className="h-full  w-full justify-center items-center">
-          <LottieView
-            source={require('../../assets/emptycart.json')}
-            autoPlay
-            loop
-            width={250}
-            height={250}
-            className="relative top-[-10vh]"
-          />
-          <Text
-            className="text-black relative top-[-22vh] text-[13px] mx-3 text-center"
-            style={styles.customFont}>
-            No content here.
-          </Text>
-        </View>
+      {showFilterModal && (
+        <UnauthorizedModal
+          isVisible={showFilterModal}
+          onClose={() => setShowFilterModal(false)}
+          navigation={navigation}
+          token={token}
+          title="Wishlist"
+        />
       )}
+
+      <View>
+        {myWishList?.length > 0 ? (
+          <View className="z-[40] h-full">
+            <SwipeListView
+              data={myWishList}
+              renderItem={renderItem}
+              renderHiddenItem={renderHiddenItem}
+              rightOpenValue={-100}
+              leftOpenValue={100}
+              disableRightSwipe={false}
+              onSwipeValueChange={onSwipeValueChange}
+            />
+          </View>
+        ) : (
+          <View className="h-full  w-full justify-center items-center">
+            <LottieView
+              source={require('../../assets/emptycart.json')}
+              autoPlay
+              loop
+              width={250}
+              height={250}
+              className="relative top-[-10vh]"
+            />
+            <Text
+              className="text-black relative top-[-22vh] text-[13px] mx-3 text-center"
+              style={styles.customFont}>
+              No content here.
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };

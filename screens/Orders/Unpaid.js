@@ -6,9 +6,7 @@ import {base_url} from '../../utils/baseUrl';
 import config from '../../utils/axiosconfig';
 import LottieView from 'lottie-react-native';
 import OrderCard from './OrderCard';
-
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Unpaid = ({navigation}) => {
   const [disable, setDisable] = useState(false);
@@ -16,6 +14,19 @@ const Unpaid = ({navigation}) => {
   const [noData, setnoData] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const [token, setToken] = useState('');
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+      setToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     getOrders2();
@@ -24,10 +35,12 @@ const Unpaid = ({navigation}) => {
   const getOrders = async () => {
     setDisable(true);
 
+    const tok = await AsyncStorage.getItem('token');
+
     try {
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(tok).headers,
       });
 
       const response = await api.post(
@@ -35,7 +48,7 @@ const Unpaid = ({navigation}) => {
         {
           status: 'Cash on Delivery',
         },
-        config(token),
+        config(tok),
       );
       // console.log(response.data);
       setData(response.data);
@@ -52,9 +65,11 @@ const Unpaid = ({navigation}) => {
 
   const getOrders2 = async () => {
     try {
+      const tok = await AsyncStorage.getItem('token');
+
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(tok).headers,
       });
 
       const response = await api.post(
@@ -62,7 +77,7 @@ const Unpaid = ({navigation}) => {
         {
           status: 'Cash on Delivery',
         },
-        config(token),
+        config(tok),
       );
       // console.log(response.data);
       setData(response.data);
@@ -77,6 +92,7 @@ const Unpaid = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
+      getToken();
       getOrders();
 
       return () => {};

@@ -11,33 +11,36 @@ import {icons, images} from '../../constants';
 import {
   VStack,
   Box,
-  Divider,
   Center,
   FormControl,
   Input,
   Button,
   Checkbox,
-  HStack,
-  Pressable,
 } from 'native-base';
 import CountryPicker, {FlagButton} from 'react-native-country-picker-modal';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
+import {base_url} from '../../utils/baseUrl';
+import Toast from 'react-native-toast-message';
+import LottieView from 'lottie-react-native';
 
 const SignUp = ({navigation}) => {
-  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [secondName, setSecondName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isEmail, setisEmail] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneNumberError, setPhoneNumberError] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [countryCode, setCountryCode] = useState('US'); // Set the default country code
 
-  const handleNameChange = value => {
-    setName(value);
+  const handleFirstNameChange = value => {
+    setFirstName(value);
+  };
+  const handleSecondNameChange = value => {
+    setSecondName(value);
   };
 
   const handleEmailChange = value => {
@@ -68,43 +71,68 @@ const SignUp = ({navigation}) => {
 
   const handlePasswordChange = value => {
     setPassword(value);
-    if (confirmPassword !== '' && confirmPassword !== value) {
-      setConfirmPasswordError('Passwords do not match');
-    } else {
-      setConfirmPasswordError('');
-    }
-  };
-
-  const handleConfirmPasswordChange = value => {
-    setConfirmPassword(value);
-    if (value !== password) {
-      setConfirmPasswordError('Passwords do not match');
-    } else {
-      setConfirmPasswordError('');
-    }
   };
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleShowLoginMethod = () => {
-    setisEmail(!isEmail);
-  };
+  const handleSignUp = async () => {
+    setLoading(true);
+    if (
+      firstName !== '' &&
+      secondName !== '' &&
+      email !== '' &&
+      emailError === '' &&
+      phoneNumber !== '' &&
+      phoneNumberError === '' &&
+      password !== ''
+    ) {
+      try {
+        const res = await axios.post(`${base_url}user/register`, {
+          firstname: firstName,
+          lastname: secondName,
+          email,
+          mobile: phoneNumber,
+          password,
+        });
 
-  const handleSignUp = () => {
-    // Perform sign up action
-  };
+        if (res.data.message === 'User created') {
+          Toast.show({
+            type: 'info',
+            text1: 'Registration Successful',
+            text2: `Welcome, ${firstName}, we are delighted to have you on board.`,
+          });
+          navigation.navigate('SignIn');
+        }
 
-  const isEnableSignUp = () => {
-    return (
-      name !== '' &&
-      ((email !== '' && emailError === '') ||
-        (phoneNumber !== '' && phoneNumberError === '')) && // check if either email or phone number is not empty and does not have errors
-      password !== '' &&
-      confirmPassword !== '' &&
-      confirmPassword === password // check if passwords match
-    );
+        if (res.data.err?.code === 11000) {
+          Toast.show({
+            type: 'info',
+            text1: 'A user with this Phone number is already registered.',
+            text2: 'Please proceed to log in using your existing credentials.',
+          });
+        }
+        setLoading(false);
+      } catch (error) {
+        if (error.message === 'Request failed with status code 400') {
+          Toast.show({
+            type: 'info',
+            text1: 'A user with this email is already registered.',
+            text2: 'Please proceed to log in using your existing credentials.',
+          });
+        }
+
+        setLoading(false);
+      }
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill all fields correctly',
+      });
+      setLoading(false);
+    }
   };
 
   const styles = StyleSheet.create({
@@ -124,7 +152,7 @@ const SignUp = ({navigation}) => {
         </View>
 
         <Center style={{backgroundColor: '#FFFFFF'}} className="relative">
-          <View className="relative top-[-250px] ">
+          <View className="relative top-[-270px] ">
             <View className="absolute w-[90vw] top-[0px] ">
               <View className="flex items-center space-y-2 justify-center relative top-[-10vh]">
                 <FastImage
@@ -142,7 +170,7 @@ const SignUp = ({navigation}) => {
               </View>
             </View>
             <Box
-              className="h-[63vh] w-[90vw] bg-white relative top-[20vh] shadow-lg shadow-slate-500"
+              className="h-[70vh] w-[90vw] bg-white relative top-[20vh] shadow-lg shadow-slate-500"
               border="1"
               borderRadius="2xl">
               <VStack space={3} marginTop={5} marginX={7}>
@@ -151,121 +179,114 @@ const SignUp = ({navigation}) => {
                     <Text
                       className="text-black font-bold"
                       style={styles.customFont}>
-                      Name
+                      First Name
                     </Text>
                   </FormControl.Label>
                   <Input
-                    placeholder="Enter your name"
-                    value={name}
-                    onChangeText={handleNameChange}
+                    placeholder="Enter your First name"
+                    value={firstName}
+                    onChangeText={handleFirstNameChange}
+                    className="text-black text-[14px]"
+                    borderColor="blue.900"
+                  />
+                </FormControl>
+
+                <FormControl isRequired>
+                  <FormControl.Label>
+                    <Text
+                      className="text-black font-bold"
+                      style={styles.customFont}>
+                      Second Name
+                    </Text>
+                  </FormControl.Label>
+                  <Input
+                    placeholder="Enter your Second name"
+                    value={secondName}
+                    onChangeText={handleSecondNameChange}
                     className="text-black text-[14px]"
                     borderColor="blue.900"
                   />
                 </FormControl>
 
                 <FormControl isRequired isInvalid={emailError !== ''}>
-                  {isEmail ? (
-                    <>
-                      <FormControl.Label>
-                        <Text
-                          className="text-black font-bold"
-                          style={styles.customFont}>
-                          Email
-                        </Text>
-                      </FormControl.Label>
-                      <Input
-                        placeholder={'Enter your email'}
-                        onChangeText={handleEmailChange}
-                        value={email}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                        returnKeyType="next"
-                        className="text-black text-[14px]"
-                        borderColor="blue.900"
-                      />
-                      <View className="flex flex-row items-center justify-between ">
-                        <View>
-                          {emailError !== '' && (
-                            <FormControl.ErrorMessage>
-                              <Text className="">{emailError}</Text>
-                            </FormControl.ErrorMessage>
+                  <FormControl.Label>
+                    <Text
+                      className="text-black font-bold"
+                      style={styles.customFont}>
+                      Email
+                    </Text>
+                  </FormControl.Label>
+                  <Input
+                    placeholder={'Enter your email'}
+                    onChangeText={handleEmailChange}
+                    value={email}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    returnKeyType="next"
+                    className="text-black text-[14px]"
+                    borderColor="blue.900"
+                  />
+                  <View className="flex flex-row items-center justify-between ">
+                    <View>
+                      {emailError !== '' && (
+                        <FormControl.ErrorMessage>
+                          <Text className="">{emailError}</Text>
+                        </FormControl.ErrorMessage>
+                      )}
+                    </View>
+                  </View>
+                </FormControl>
+
+                <FormControl isRequired isInvalid={phoneNumberError !== ''}>
+                  <FormControl.Label>
+                    <Text
+                      className="text-black font-bold"
+                      style={styles.customFont}>
+                      Phone Number
+                    </Text>
+                  </FormControl.Label>
+                  <Input
+                    placeholder="Enter your phone number"
+                    onChangeText={handlePhoneNumberChange}
+                    value={phoneNumber}
+                    keyboardType="numeric"
+                    returnKeyType="done"
+                    borderColor="blue.900"
+                    className="text-black text-[14px]"
+                    InputLeftElement={
+                      <View>
+                        <CountryPicker
+                          countryCode={countryCode}
+                          withFilter
+                          withFlag
+                          withCountryNameButton={false} // Set withCountryNameButton to false
+                          withAlphaFilter
+                          withCallingCode={true}
+                          withEmoji
+                          onSelect={onSelect}
+                          visible={false}
+                          renderFlagButton={() => (
+                            <View className="flex flex-row items-center ml-[5px]">
+                              <FlagButton countryCode="KE" withEmoji />
+                              <Text className="text-black font-semibold">
+                                +254
+                              </Text>
+                            </View>
                           )}
-                        </View>
-
-                        <TouchableOpacity
-                          onPress={handleShowLoginMethod}
-                          className="relative  top-[3px] ">
-                          <Text
-                            className="text-black italic text-[13px] mt-1 underline text-right"
-                            style={styles.customFont}>
-                            or, Phone number
-                          </Text>
-                        </TouchableOpacity>
+                        />
                       </View>
-                    </>
-                  ) : (
-                    <FormControl isRequired isInvalid={phoneNumberError !== ''}>
-                      <FormControl.Label>
-                        <Text
-                          className="text-black font-bold"
-                          style={styles.customFont}>
-                          Phone Number
-                        </Text>
-                      </FormControl.Label>
-                      <Input
-                        placeholder="Enter your phone number"
-                        onChangeText={handlePhoneNumberChange}
-                        value={phoneNumber}
-                        keyboardType="numeric"
-                        returnKeyType="done"
-                        borderColor="blue.900"
-                        className="text-black text-[14px]"
-                        InputLeftElement={
-                          <View>
-                            <CountryPicker
-                              countryCode={countryCode}
-                              withFilter
-                              withFlag
-                              withCountryNameButton={false} // Set withCountryNameButton to false
-                              withAlphaFilter
-                              withCallingCode={true}
-                              withEmoji
-                              onSelect={onSelect}
-                              visible={false}
-                              renderFlagButton={() => (
-                                <View className="flex flex-row items-center ml-[5px]">
-                                  <FlagButton countryCode="KE" withEmoji />
-                                  <Text className="text-black font-semibold">
-                                    +254
-                                  </Text>
-                                </View>
-                              )}
-                            />
-                          </View>
-                        }
-                      />
+                    }
+                  />
 
-                      <View className="flex flex-row items-center justify-between ">
-                        <View>
-                          {phoneNumberError !== '' && (
-                            <FormControl.ErrorMessage>
-                              {phoneNumberError}
-                            </FormControl.ErrorMessage>
-                          )}
-                        </View>
-
-                        <TouchableOpacity
-                          onPress={handleShowLoginMethod}
-                          className="relative top-[3px]">
-                          <Text
-                            className="text-black italic text-[13px] mt-1 underline text-right"
-                            style={styles.customFont}>
-                            or, Email
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </FormControl>
-                  )}
+                  <View className="flex flex-row items-center justify-between ">
+                    <View>
+                      {phoneNumberError !== '' && (
+                        <FormControl.ErrorMessage>
+                          {phoneNumberError}
+                        </FormControl.ErrorMessage>
+                      )}
+                    </View>
+                  </View>
                 </FormControl>
 
                 <FormControl isRequired>
@@ -278,49 +299,6 @@ const SignUp = ({navigation}) => {
                   </FormControl.Label>
                   <Input
                     placeholder="Enter your password"
-                    onChangeText={handlePasswordChange}
-                    value={password}
-                    secureTextEntry={!showPassword}
-                    autoCapitalize="none"
-                    returnKeyType="done"
-                    borderColor="blue.900"
-                    className="text-black text-[14px]"
-                    InputRightElement={
-                      <View>
-                        {!showPassword ? (
-                          <TouchableOpacity onPress={handleShowPassword}>
-                            <Image
-                              source={icons.eye}
-                              onPress={handleShowPassword}
-                              className="w-[20px] h-[20px] mr-[10px]"
-                              style={{tintColor: 'black'}}
-                            />
-                          </TouchableOpacity>
-                        ) : (
-                          <TouchableOpacity onPress={handleShowPassword}>
-                            <Image
-                              source={icons.eye_close}
-                              onPress={handleShowPassword}
-                              className="w-[20px] h-[20px] mr-[10px]"
-                              style={{tintColor: 'black'}}
-                            />
-                          </TouchableOpacity>
-                        )}
-                      </View>
-                    }
-                  />
-                </FormControl>
-
-                <FormControl isRequired className="pb-[10px]">
-                  <FormControl.Label>
-                    <Text
-                      className="text-black font-bold"
-                      style={styles.customFont}>
-                      Confirm Password
-                    </Text>
-                  </FormControl.Label>
-                  <Input
-                    placeholder="Confirm password"
                     onChangeText={handlePasswordChange}
                     value={password}
                     secureTextEntry={!showPassword}
@@ -394,13 +372,27 @@ const SignUp = ({navigation}) => {
                     <Button
                       mt={2}
                       className="bg-blue-900"
-                      // onPress={handleSignIn}
+                      onPress={handleSignUp}
                       disabled={false}>
-                      <Text
-                        style={styles.customFont}
-                        className="text-white font-bold text-[16px]">
-                        Sign up
-                      </Text>
+                      <View>
+                        {loading ? (
+                          <View className="bg-red-600 h-[20px] relative left-[-50px] top-[-14px] ">
+                            <LottieView
+                              source={require('../../assets/Evabamar.json')}
+                              autoPlay
+                              loop
+                              width={100}
+                              height={50}
+                            />
+                          </View>
+                        ) : (
+                          <Text
+                            style={styles.customFont}
+                            className="text-white font-bold text-[16px]">
+                            Sign up
+                          </Text>
+                        )}
+                      </View>
                     </Button>
                   </TouchableOpacity>
 

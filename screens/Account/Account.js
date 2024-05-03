@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -11,8 +11,103 @@ import {
 import {icons, images} from '../../constants';
 import Recommended from './Recommended';
 import {Button} from 'native-base';
+import axios from 'axios';
+import {base_url} from '../../utils/baseUrl';
+import config from '../../utils/axiosconfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFocusEffect} from '@react-navigation/native';
 
 const Account = ({navigation}) => {
+  const [firstname, setFirstName] = useState(null);
+  const [secondname, setSecondName] = useState(null);
+  const [orders, setOrders] = useState(0);
+  const [cart, setCart] = useState(0);
+  const [wishlist, setWishlist] = useState(0);
+
+  const verifyToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+
+      const res = await api.get('user/verifyToken/', config(token));
+
+      if (res.data.message === 'authorized') {
+        setFirstName(res.data.user?.firstname);
+        setSecondName(res.data.user?.lastname);
+        getOrders(token);
+        getCart(token);
+        getWishlistProducts(token);
+      }
+    } catch (error) {
+      // console.log(error);
+    }
+  };
+
+  const getOrders = async token => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(token).headers,
+      });
+
+      const response = await api.post('user/orders/', config(token));
+      // console.log(response.data);
+      setOrders(response.data.length);
+    } catch (err) {
+      // console.log(err);
+      if (err.response.data.message === 'No orders found for user') {
+        console.log(err.response.data.message);
+      }
+    }
+  };
+
+  const getCart = async currentToken => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(currentToken).headers,
+      });
+
+      const res = await api.get('/cart');
+      // console.log(res);
+      setCart(res.data?.items.length);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getWishlistProducts = async currentToken => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(currentToken).headers,
+      });
+      const response = await api.get(
+        `${base_url}user/wishlist/`,
+        config(currentToken),
+      );
+      setWishlist(response.data.wishlist.length);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    verifyToken();
+  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      verifyToken();
+
+      return () => {
+        // Clean up any subscriptions or resources if needed
+      };
+    }, []),
+  );
+
   return (
     <View className="bg-gray-100">
       <FlatList
@@ -35,14 +130,30 @@ const Account = ({navigation}) => {
                   className="flex flex-row items-center  space-x-4"
                   onPress={() => navigation.navigate('SignIn')}>
                   <Image
-                    source={icons.profilePlaceholder}
+                    source={icons.useravatar}
                     className="w-[55px] h-[55px]"
                     resizeMode="contain"
                     alt="image"
                   />
-                  <Text className="text-white">Login/Register</Text>
+                  <View>
+                    {firstname !== null ? (
+                      <View className="flex flex-row space-x-1">
+                        <Text className="text-white text-[15px]">
+                          {firstname}
+                        </Text>
+                        <Text className="text-white text-[15px]">
+                          {secondname}
+                        </Text>
+                      </View>
+                    ) : (
+                      <Text className="text-white text-[15px]">
+                        Login/Register
+                      </Text>
+                    )}
+                  </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('AccountSettings')}>
                   <Image
                     source={icons.setting}
                     className="w-[25px] h-[25px]"
@@ -80,15 +191,21 @@ const Account = ({navigation}) => {
               {/* section 3  */}
               <View className="flex flex-row items-center justify-between px-6">
                 <View className="items-center">
-                  <Text className="text-[17px] font-bold text-white">1</Text>
+                  <Text className="text-[17px] font-bold text-white">
+                    {wishlist}
+                  </Text>
                   <Text className="text-[13px]  text-white">Wishlist </Text>
                 </View>
                 <View className="items-center">
-                  <Text className="text-[17px] font-bold text-white">5</Text>
+                  <Text className="text-[17px] font-bold text-white">
+                    {cart}
+                  </Text>
                   <Text className="text-[13px]  text-white">Cart</Text>
                 </View>
                 <View className="items-center">
-                  <Text className="text-[17px] font-bold text-white">12</Text>
+                  <Text className="text-[17px] font-bold text-white">
+                    {orders}
+                  </Text>
                   <Text className="text-[13px]  text-white">Orders</Text>
                 </View>
               </View>
@@ -108,7 +225,9 @@ const Account = ({navigation}) => {
 
               {/* section 2  */}
               <View className="flex flex-row justify-between mt-[20px]">
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('MyOrders')}>
                   <Image
                     source={icons.wallet}
                     className="w-[25px] h-[25px]"
@@ -118,7 +237,9 @@ const Account = ({navigation}) => {
                   />
                   <Text className="text-black text-[13px]">Unpaid</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('MyOrders')}>
                   <Image
                     source={icons.shipping3}
                     className="w-[25px] h-[25px]"
@@ -133,7 +254,9 @@ const Account = ({navigation}) => {
                     <Text className="text-black text-[13px]">shipped</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('MyOrders')}>
                   <Image
                     source={icons.shipped}
                     className="w-[25px] h-[25px]"
@@ -143,7 +266,9 @@ const Account = ({navigation}) => {
                   />
                   <Text className="text-black text-[13px]">Shipped</Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('MyOrders')}>
                   <Image
                     source={icons.review}
                     className="w-[25px] h-[25px]"
@@ -158,7 +283,9 @@ const Account = ({navigation}) => {
                     <Text className="text-black text-[13px]"> Reviewed</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => alert('Refund/Aftersale coming soon!')}>
                   <Image
                     source={icons.refund}
                     className="w-[25px] h-[25px]"
@@ -211,7 +338,9 @@ const Account = ({navigation}) => {
 
               {/* section 2  */}
               <View className="flex flex-row justify-between mt-[20px]">
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => alert('FashionWarrior invite coming soon!')}>
                   <Image
                     source={icons.code}
                     className="w-[25px] h-[25px]"
@@ -223,7 +352,11 @@ const Account = ({navigation}) => {
                     Enter invite Code
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() =>
+                    alert('FashionWarrior Invite & Earn coming soon!')
+                  }>
                   <Image
                     source={icons.invite}
                     className="w-[25px] h-[25px]"
@@ -237,7 +370,11 @@ const Account = ({navigation}) => {
                     </Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() =>
+                    alert('FashionWarrior Withdraw to Balance coming soon!')
+                  }>
                   <Image
                     source={icons.atm}
                     className="w-[25px] h-[25px]"
@@ -262,7 +399,9 @@ const Account = ({navigation}) => {
 
               {/* section 2  */}
               <View className="flex flex-row justify-between mt-[20px]">
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('AddressBook')}>
                   <Image
                     source={icons.addressbook}
                     className="w-[25px] h-[25px]"
@@ -277,22 +416,23 @@ const Account = ({navigation}) => {
                     </Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('AccountSettings')}>
                   <Image
-                    source={icons.customerservice}
+                    source={icons.setting2}
                     className="w-[25px] h-[25px]"
-                    style={{tintColor: 'green'}}
+                    style={{tintColor: '#020a3b'}}
                     resizeMode="contain"
                     alt="image"
                   />
                   <View>
-                    <Text className="text-black text-[13px]">Customer</Text>
-                    <Text className="text-black text-[13px] text-center">
-                      Service
-                    </Text>
+                    <Text className="text-black text-[13px]">Settings</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                {/* <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('Faqs')}>
                   <Image
                     source={icons.faq}
                     className="w-[25px] h-[25px]"
@@ -312,23 +452,10 @@ const Account = ({navigation}) => {
                     alt="image"
                   />
                   <Text className="text-black text-[13px]">Suggestion</Text>
-                </TouchableOpacity>
-              </View>
-              {/* section 3  */}
-              <View className="flex flex-row justify-between mt-[20px]">
-                <TouchableOpacity className="items-center flex space-y-1">
-                  <Image
-                    source={icons.setting2}
-                    className="w-[25px] h-[25px]"
-                    style={{tintColor: '#020a3b'}}
-                    resizeMode="contain"
-                    alt="image"
-                  />
-                  <View>
-                    <Text className="text-black text-[13px]">Settings</Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                </TouchableOpacity> */}
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('Language')}>
                   <Image
                     source={icons.language}
                     className="w-[25px] h-[25px]"
@@ -340,7 +467,9 @@ const Account = ({navigation}) => {
                     <Text className="text-black text-[13px]">Language</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('Currency')}>
                   <Image
                     source={icons.currency}
                     className="w-[25px] h-[25px]"
@@ -352,7 +481,12 @@ const Account = ({navigation}) => {
                     <Text className="text-black text-[13px]">Currency</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity className="items-center flex space-y-1">
+              </View>
+              {/* section 3  */}
+              {/* <View className="flex flex-row space-x-[60px] mt-[20px]">
+                <TouchableOpacity
+                  className="items-center flex space-y-1"
+                  onPress={() => navigation.navigate('Notifications')}>
                   <Image
                     source={icons.notification}
                     className="w-[25px] h-[25px]"
@@ -362,7 +496,7 @@ const Account = ({navigation}) => {
                   />
                   <Text className="text-black text-[13px]">Notifications</Text>
                 </TouchableOpacity>
-              </View>
+              </View> */}
             </View>
           </>
         }

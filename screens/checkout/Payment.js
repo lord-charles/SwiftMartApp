@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Header from './Header';
 import {Button, FlatList, Input} from 'native-base';
@@ -8,9 +8,7 @@ import config from '../../utils/axiosconfig';
 import LottieView from 'lottie-react-native';
 import FastImage from 'react-native-fast-image';
 import axios from 'axios';
-
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Payment = ({route, navigation}) => {
   const toast = useToast();
@@ -19,6 +17,18 @@ const Payment = ({route, navigation}) => {
   const {data} = route.params;
   const [paymentDetails, setPaymentDetails] = useState(data);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const [token, setToken] = useState('');
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+      setToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
 
   const placeOrder = async () => {
     setDisablePlaceOrder(true);
@@ -140,6 +150,10 @@ const Payment = ({route, navigation}) => {
       console.log(err);
     }
   };
+  useEffect(() => {
+    getToken();
+  }, []);
+
   return (
     <View>
       <Header title="Payment" navigation={navigation} />

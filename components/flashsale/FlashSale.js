@@ -69,7 +69,7 @@ const FlashSale = ({products, navigation}) => {
                       </Text>
                     </View>
                     <Progress.Bar
-                      progress={(item.quantity / 2000) * 100}
+                      progress={(item.quantity / 300000) * 100}
                       width={90}
                       height={4}
                       className="text-red-500"

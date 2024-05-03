@@ -4,6 +4,7 @@ import LottieView from 'lottie-react-native';
 import {icons} from '../constants';
 import SplashScreen from 'react-native-splash-screen';
 import FastImage from 'react-native-fast-image';
+import StatusBarComponent from './StatusBar';
 
 const styles = StyleSheet.create({
   customFont: {
@@ -18,6 +19,8 @@ export default function Splash() {
 
   return (
     <View className="h-full w-screen" style={{backgroundColor: '#020a3b'}}>
+      <StatusBarComponent backgroundColor="#020a3b" />
+
       <View className="flex flex-col items-center mt-[-20px] ml-[10px]">
         <FastImage
           source={icons.warriorlogo2}

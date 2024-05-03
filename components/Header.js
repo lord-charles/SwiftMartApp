@@ -6,11 +6,9 @@ import axios from 'axios';
 import {base_url} from '../utils/baseUrl';
 import {useFocusEffect} from '@react-navigation/native';
 
-const Header = ({navigation, wishlistData}) => {
+const Header = ({navigation, wishlistData, authorized, token}) => {
   const [data, setData] = useState([]);
 
-  const token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
   const getCart = async () => {
     try {
       const api = axios.create({
@@ -57,14 +55,17 @@ const Header = ({navigation, wishlistData}) => {
           </Text>
         </View>
         <View className="flex flex-row space-x-6">
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Search')}>
             <Image
               source={icons.search}
               className="w-[20px] h-[20px]"
               style={{tintColor: 'black'}}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('WishList')}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('WishList', {authorized, token})
+            }>
             <Image
               source={icons.heart}
               className="w-[20px] h-[20px]"
@@ -81,7 +82,7 @@ const Header = ({navigation, wishlistData}) => {
 
           <TouchableOpacity
             className="relative"
-            onPress={() => navigation.navigate('Cart')}>
+            onPress={() => navigation.navigate('Cart', {authorized, token})}>
             <Image
               source={icons.cart}
               className="w-[20px] h-[20px]"

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {base_url} from '../../utils/baseUrl';
 import config from '../../utils/axiosconfig';
@@ -10,11 +10,10 @@ import {icons} from '../../constants';
 import {AlertDialog, Button, Divider, Input} from 'native-base';
 import {useFocusEffect} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+import {UnauthorizedModal} from '../../components';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
-
-const Cart = ({navigation}) => {
+const Cart = ({navigation, authorized}) => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(false);
@@ -22,12 +21,54 @@ const Cart = ({navigation}) => {
   const toast = useToast();
   const [listData, setListData] = useState([]);
   const [total, setTotal] = useState(0);
+  const [isAuthorized, setIsAuthorized] = useState(authorized);
+  const [token, setToken] = useState('');
 
-  const getCart = async () => {
+  const [showFilterModal, setShowFilterModal] = useState(false);
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+      setToken(res);
+      verifyToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
+
+  const verifyToken = async currentToken => {
     try {
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(currentToken).headers,
+      });
+
+      const res = await api.get('user/verifyToken/', config(currentToken));
+      if (res.data.message === 'authorized') {
+        getCart(currentToken);
+      }
+    } catch (error) {
+      console.log(error);
+
+      if (error.message === 'Request failed with status code 404') {
+        toast.show('sign to access Cart', {
+          type: 'warning',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        }),
+          setShowFilterModal(true);
+      }
+    }
+  };
+
+  const getCart = async currentToken => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(currentToken).headers,
       });
 
       const res = await api.get('/cart');
@@ -273,14 +314,8 @@ const Cart = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      // Function to be executed when the screen comes into focus
-      // Example: Fetch cart content
+      getToken();
 
-      // Call the function
-      getCart();
-
-      // Optionally, return a cleanup function if needed
-      // This will be executed when the component unmounts or when the screen loses focus
       return () => {
         // Clean up any subscriptions or resources if needed
       };
@@ -313,7 +348,7 @@ const Cart = ({navigation}) => {
             {data.item.product.description}
           </Text>
           <Text className="text-[13px] text-gray-500 w-[70vw]">
-            {data.item.quantity}, {data.item.color}, {data.item.product.title}
+            {data.item.product.title}
           </Text>
           <View>
             <Text className="text-black text-[13px]">
@@ -528,6 +563,14 @@ const Cart = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
+      {showFilterModal && (
+        <UnauthorizedModal
+          isVisible={showFilterModal}
+          onClose={() => setShowFilterModal(false)}
+          navigation={navigation}
+          title="Cart"
+        />
+      )}
       {loading ? (
         <View className="h-[100px] absolute top-[53%] left-[33%] z-[999]">
           <LottieView
@@ -593,6 +636,76 @@ const Cart = ({navigation}) => {
           </Text>
         </View>
       )}
+
+      {isAuthorized ? (
+        <View>
+          {loading ? (
+            <View className="h-[100px] absolute top-[53%] left-[33%] z-[999]">
+              <LottieView
+                source={require('../../assets/dots.json')}
+                autoPlay
+                loop
+                width={120}
+                height={120}
+              />
+            </View>
+          ) : null}
+
+          {listData?.length > 0 ? (
+            <View className="z-[40] h-full">
+              <SwipeListView
+                data={listData}
+                renderItem={renderItem}
+                renderHiddenItem={renderHiddenItem}
+                rightOpenValue={-100}
+                leftOpenValue={100}
+                disableRightSwipe={false}
+                onSwipeValueChange={onSwipeValueChange}
+              />
+              <View className="bg-white absolute top-[77vh] h-[120px] w-full z-[999] px-2">
+                <Divider className="mb-4" />
+                <View className="flex flex-row justify-end">
+                  <View className="flex flex-row items-center space-x-2 mt-4.5">
+                    <View className="flex flex-row items-center space-x-2">
+                      <Text className="text-black">Total:</Text>
+                      <Text className="text-black" style={styles.customFont}>
+                        {Math.ceil(total).toLocaleString()}
+                      </Text>
+                    </View>
+                    <Button
+                      className="w-[110px] bg-[#020a3b]"
+                      onPress={() => {
+                        addToCart();
+                      }}>
+                      <Text
+                        style={styles.customFont}
+                        className="text-white text-[15px] font-bold">
+                        Check out
+                      </Text>
+                    </Button>
+                  </View>
+                </View>
+              </View>
+            </View>
+          ) : (
+            <View className="h-full  w-full justify-center items-center">
+              <LottieView
+                source={require('../../assets/emptycart.json')}
+                autoPlay
+                loop
+                width={250}
+                height={250}
+                className="relative top-[0vh]"
+              />
+              <Text
+                className="text-black relative top-[-1vh] text-[12px] mx-3 text-center"
+                style={styles.customFont}>
+                No content here.
+              </Text>
+            </View>
+          )}
+        </View>
+      ) : null}
     </View>
   );
 };

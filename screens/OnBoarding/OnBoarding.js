@@ -13,6 +13,7 @@ import LottieView from 'lottie-react-native';
 
 import {COLORS, constants, images, SIZES, icons} from '../../constants';
 import NextButton from './NextButton';
+import StatusBarComponent from '../../components/StatusBar';
 
 const OnBoarding = ({navigation}) => {
   const scrollX = React.useRef(new Animated.Value(0)).current; // for dot animation
@@ -105,7 +106,7 @@ const OnBoarding = ({navigation}) => {
                   Animated: true,
                 });
               } else {
-                navigation.navigate('DrawerNav');
+                navigation.navigate('SignIn');
               }
             }}>
             <NextButton
@@ -138,6 +139,8 @@ const OnBoarding = ({navigation}) => {
       }}
       className="h-full"
       style={{backgroundColor: '#020a3b'}}>
+      <StatusBarComponent backgroundColor="#020a3b" />
+
       {/* renderHeaderlogo */}
       {renderHeaderlogo()}
 

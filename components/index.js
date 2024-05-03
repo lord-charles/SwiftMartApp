@@ -14,8 +14,14 @@ import In24 from './loading/In24';
 import FilterModal from './modal/FilterModal';
 import ColorComponent from './Colors';
 import Slider2 from './Slider2';
+import AppVersion from './AppVersion';
+import CopyRight from './CopyRight';
+import UnauthorizedModal from './UnauthorizedModal/UnauthorizedModal';
 
 export {
+  UnauthorizedModal,
+  CopyRight,
+  AppVersion,
   FlashSale,
   Slider,
   MajorCategories,

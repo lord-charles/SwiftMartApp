@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {Rating} from 'react-native-ratings';
 import {icons} from '../../constants';
@@ -6,18 +6,59 @@ import axios from 'axios';
 import {base_url} from '../../utils/baseUrl';
 import config from '../../utils/axiosconfig';
 import {useToast} from 'react-native-toast-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDIwMDI1ZDJmYWQ2OWIwNzM3MDBhYjgiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2ODYzMTIwMTEsImV4cCI6MTc3MjcxMjAxMX0.r_KLvrWa-BotpCsysEUbRs2iccwetr4SXQ4OcuOqKCA';
-
-const ProductCard = ({product, navigation, getWishlistProducts}) => {
+const ProductCard = ({
+  product,
+  navigation,
+  getWishlistProducts,
+  authorized,
+}) => {
   const toast = useToast();
 
-  const addToWishlist = async () => {
+  const [token, setToken] = useState('');
+
+  // Retrieving token
+  const getToken = async () => {
+    try {
+      const res = await AsyncStorage.getItem('token');
+
+      verifyToken(res);
+    } catch (error) {
+      console.log('Error retrieving token:', error);
+    }
+  };
+  const verifyToken = async currentToken => {
     try {
       const api = axios.create({
         baseURL: base_url,
-        headers: config(token).headers,
+        headers: config(currentToken).headers,
+      });
+
+      const res = await api.get('user/verifyToken/', config(currentToken));
+      if (res.data.message === 'authorized') {
+        addToWishlist(currentToken);
+      }
+    } catch (error) {
+      console.log(error);
+
+      if (error.message === 'Request failed with status code 404') {
+        toast.show('sign to access wishlist', {
+          type: 'warning',
+          placement: 'top',
+          duration: 2000,
+          offset: 30,
+          animationType: 'slide-in',
+        });
+      }
+    }
+  };
+
+  const addToWishlist = async currentToken => {
+    try {
+      const api = axios.create({
+        baseURL: base_url,
+        headers: config(currentToken).headers,
       });
 
       const res = await api.put(
@@ -25,7 +66,7 @@ const ProductCard = ({product, navigation, getWishlistProducts}) => {
         {
           prodId: product._id,
         },
-        config(token),
+        config(currentToken),
       );
       if (res.data.added) {
         return (
@@ -66,21 +107,23 @@ const ProductCard = ({product, navigation, getWishlistProducts}) => {
         onPress={() =>
           navigation.navigate('ProductDetails', {
             id: product._id,
+            authorized,
+            token,
           })
         }>
         <Image
-          source={{uri: product.images[0].url}}
+          source={{uri: product?.images[0]?.url}}
           className="w-[120px] h-[120px]"
           resizeMode="contain"
         />
       </TouchableOpacity>
 
       <Text className="text-black text-[13px] mt-3">
-        {product.description.slice(0, 24)}
-        {product.description.length > 24 ? '...' : ''}
+        {product?.description?.slice(0, 24)}
+        {product?.description?.length > 24 ? '...' : ''}
       </Text>
       <Text className="text-black text-[15px] font-bold text-center mt-[5px]">
-        Ksh {Math.floor(product.price).toLocaleString()}
+        Ksh {Math.floor(product?.price)?.toLocaleString()}
       </Text>
 
       <View className="flex flex-row space-x-9 items-center">
@@ -94,7 +137,7 @@ const ProductCard = ({product, navigation, getWishlistProducts}) => {
           style={{paddingVertical: 5}}
           startingValue={3}
         />
-        <TouchableOpacity onPress={() => addToWishlist()}>
+        <TouchableOpacity onPress={() => getToken()}>
           <Image
             source={icons.addtofav}
             className="w-[20px] h-[20px]"
